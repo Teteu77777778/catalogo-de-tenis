@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCancelar = document.getElementById('btn-cancelar');
     const tenisIdInput = document.getElementById('tenis-id');
 
-    let currentImageUrls = []; // Para armazenar as URLs das imagens ao editar
+    let currentImageUrls = [];
+    const whatsappNumber = "5511989806235"; // Seu número de WhatsApp aqui
 
     // --- Parte 1: Gerenciamento (index.html) ---
     if (formulario) {
@@ -42,11 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const tenisId = tenisIdInput.value;
-            let finalImageUrls = [...currentImageUrls]; // Começa com as imagens já existentes
+            let finalImageUrls = [...currentImageUrls];
 
             const arquivos = imagemFileInput.files;
 
-            // Se novas imagens foram selecionadas, faz o upload delas
             if (arquivos.length > 0) {
                 const uploadPromises = [];
                 for (let i = 0; i < arquivos.length; i++) {
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             },
                             async () => {
                                 const downloadURL = await storageRef.getDownloadURL();
-                                finalImageUrls.push(downloadURL); // Adiciona as novas URLs
+                                finalImageUrls.push(downloadURL);
                                 resolve();
                             }
                         );
@@ -87,10 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (tenisId) {
-                // Se existe um ID, atualiza o documento existente
                 await colecaoTenis.doc(tenisId).update(tenisData);
             } else {
-                // Se não existe ID, adiciona um novo documento
                 tenisData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
                 await colecaoTenis.add(tenisData);
             }
@@ -109,12 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSubmit.textContent = "Adicionar Tênis";
         btnCancelar.style.display = 'none';
         tenisIdInput.value = '';
-        imagemFileInput.value = ''; // Limpa o campo de arquivo
-        imagensAtuaisContainer.innerHTML = ''; // Limpa as imagens de pré-visualização
-        currentImageUrls = []; // Reseta as URLs de imagem atuais
+        imagemFileInput.value = '';
+        imagensAtuaisContainer.innerHTML = '';
+        currentImageUrls = [];
     }
 
-    // Função para preencher o formulário quando o botão de editar é clicado
     async function preencherFormulario(tenisId) {
         const doc = await colecaoTenis.doc(tenisId).get();
         if (doc.exists) {
@@ -132,13 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSubmit.textContent = "Salvar Alterações";
             btnCancelar.style.display = 'inline-block';
 
-            // Carrega e exibe as imagens atuais
             currentImageUrls = tenis.imagemUrls || [];
             renderizarImagensAtuais();
         }
     }
 
-    // Função para renderizar as imagens atuais na interface de edição
     function renderizarImagensAtuais() {
         imagensAtuaisContainer.innerHTML = '';
         if (currentImageUrls.length === 0) {
@@ -160,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
             removeBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                // Remove a imagem do Storage e atualiza o Firestore
                 await removerImagem(tenisIdInput.value, url, index);
             });
 
@@ -170,24 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Função para remover uma imagem
     async function removerImagem(tenisId, imageUrl, indexToRemove) {
-        // Remove do Storage
         try {
             const imageRef = storage.refFromURL(imageUrl);
             await imageRef.delete();
-            console.log("Imagem removida do Storage:", imageUrl);
         } catch (error) {
             console.error("Erro ao remover imagem do Storage:", error);
-            // Continua mesmo se a remoção do Storage falhar, para tentar remover do Firestore
         }
 
-        // Remove do array de URLs e atualiza o Firestore
         currentImageUrls.splice(indexToRemove, 1);
         await colecaoTenis.doc(tenisId).update({
             imagemUrls: currentImageUrls
         });
-        renderizarImagensAtuais(); // Re-renderiza a lista de imagens
+        renderizarImagensAtuais();
     }
 
 
@@ -252,6 +241,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p><strong>Modelo:</strong> ${tenis.modelo}</p>
             `;
             
+            const whatsappMessage = `Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`;
+            const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(whatsappMessage)}`;
+            
+            cardHTML += `<a href="${whatsappLink}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>`;
+
             if (formulario) {
                 cardHTML += `
                     <div class="btn-admin">
@@ -273,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.stopPropagation();
                     e.preventDefault();
 
-                    // Antes de remover o documento, remove todas as imagens associadas
                     if (tenis.imagemUrls && tenis.imagemUrls.length > 0) {
                         const deleteImagePromises = tenis.imagemUrls.map(url => {
                             const imageRef = storage.refFromURL(url);
@@ -311,6 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             imagensHtml += `<img src="${url}" alt="${tenis.nome}">`;
                         });
                     }
+                    const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
+
 
                     detalhesContainer.innerHTML = `
                         <h2>${tenis.nome}</h2>
@@ -319,8 +314,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             ${imagensHtml}
                         </div>
                         <p>${tenis.descricao}</p>
-                        <p><strong>Gênero:</strong> ${tenis.generos.join(', ')}</p>
+                        <p><strong>Gênero:</strong> ${generosTexto}</p>
                         <p><strong>Modelo:</strong> ${tenis.modelo}</p>
+                        <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
                     `;
                 } else {
                     detalhesContainer.innerHTML = `<p>Produto não encontrado.</p>`;
