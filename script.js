@@ -29,43 +29,49 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const imagemFileInput = document.getElementById('imagem-file');
     
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnCancelar = document.getElementById('btn-cancelar');
+    const tenisIdInput = document.getElementById('tenis-id');
+
     // --- Parte 1: Gerenciamento (index.html) ---
     if (formulario) {
         formulario.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const arquivos = imagemFileInput.files;
-            if (arquivos.length === 0) return;
+            const tenisId = tenisIdInput.value;
 
             const urls = [];
-            const uploadPromises = [];
+            const arquivos = imagemFileInput.files;
 
-            for (let i = 0; i < arquivos.length; i++) {
-                const arquivo = arquivos[i];
-                const storageRef = storage.ref(`tenis-imagens/${Date.now()}_${arquivo.name}`);
-                const uploadTask = storageRef.put(arquivo);
+            // Se novas imagens foram selecionadas, faz o upload delas
+            if (arquivos.length > 0) {
+                const uploadPromises = [];
+                for (let i = 0; i < arquivos.length; i++) {
+                    const arquivo = arquivos[i];
+                    const storageRef = storage.ref(`tenis-imagens/${Date.now()}_${arquivo.name}`);
+                    const uploadTask = storageRef.put(arquivo);
 
-                const promise = new Promise((resolve, reject) => {
-                    uploadTask.on(
-                        firebase.storage.TaskEvent.STATE_CHANGED,
-                        (snapshot) => {},
-                        (error) => {
-                            reject(error);
-                        },
-                        async () => {
-                            const downloadURL = await storageRef.getDownloadURL();
-                            urls.push(downloadURL);
-                            resolve();
-                        }
-                    );
-                });
-                uploadPromises.push(promise);
+                    const promise = new Promise((resolve, reject) => {
+                        uploadTask.on(
+                            firebase.storage.TaskEvent.STATE_CHANGED,
+                            (snapshot) => {},
+                            (error) => {
+                                reject(error);
+                            },
+                            async () => {
+                                const downloadURL = await storageRef.getDownloadURL();
+                                urls.push(downloadURL);
+                                resolve();
+                            }
+                        );
+                    });
+                    uploadPromises.push(promise);
+                }
+                await Promise.all(uploadPromises);
             }
 
-            await Promise.all(uploadPromises);
-
             const novoTenis = {
-                imagemUrls: urls,
+                imagemUrls: urls, // Pode estar vazio se nenhuma nova imagem foi enviada
                 nome: document.getElementById('nome-tenis').value,
                 valor: parseFloat(document.getElementById('valor-tenis').value),
                 descricao: document.getElementById('descricao-tenis').value,
@@ -78,9 +84,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 novoTenis.generos.push(checkbox.value);
             });
 
-            await colecaoTenis.add(novoTenis);
+            if (tenisId) {
+                // Se existe um ID, atualiza o documento existente
+                await colecaoTenis.doc(tenisId).update(novoTenis);
+            } else {
+                // Se não existe ID, adiciona um novo documento
+                await colecaoTenis.add(novoTenis);
+            }
+
             formulario.reset();
+            resetarFormulario();
         });
+
+        btnCancelar.addEventListener('click', () => {
+            formulario.reset();
+            resetarFormulario();
+        });
+    }
+
+    function resetarFormulario() {
+        btnSubmit.textContent = "Adicionar Tênis";
+        btnCancelar.style.display = 'none';
+        tenisIdInput.value = '';
+    }
+
+    // Função para preencher o formulário quando o botão de editar é clicado
+    async function preencherFormulario(tenisId) {
+        const doc = await colecaoTenis.doc(tenisId).get();
+        if (doc.exists) {
+            const tenis = doc.data();
+            document.getElementById('nome-tenis').value = tenis.nome;
+            document.getElementById('valor-tenis').value = tenis.valor;
+            document.getElementById('descricao-tenis').value = tenis.descricao;
+            document.getElementById('modelo-tenis').value = tenis.modelo;
+            
+            document.querySelectorAll('input[name="genero"]').forEach(checkbox => {
+                checkbox.checked = tenis.generos.includes(checkbox.value);
+            });
+
+            tenisIdInput.value = doc.id;
+            btnSubmit.textContent = "Salvar Alterações";
+            btnCancelar.style.display = 'inline-block';
+        }
     }
 
     // --- Parte 2: Lógica de Filtro, Busca e Ordenação ---
@@ -145,7 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
             if (formulario) {
-                cardHTML += `<button class="btn-remover" data-id="${tenis.id}">Remover</button>`;
+                cardHTML += `
+                    <div class="btn-admin">
+                        <button class="btn-editar" data-id="${tenis.id}">Editar</button>
+                        <button class="btn-remover" data-id="${tenis.id}">Remover</button>
+                    </div>
+                `;
             }
             
             tenisCard.innerHTML = cardHTML;
@@ -160,6 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.stopPropagation();
                     e.preventDefault();
                     await colecaoTenis.doc(tenis.id).delete();
+                });
+
+                const btnEditar = tenisCard.querySelector('.btn-editar');
+                btnEditar.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    preencherFormulario(tenis.id);
                 });
             }
         });
