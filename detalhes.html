@@ -22,10 +22,18 @@
         }
 
         .detalhes-container .imagens-galeria img {
-            max-width: 100%;
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
             height: auto;
+            object-fit: contain;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .detalhes-container .imagens-galeria img:hover {
+            transform: scale(1.05);
         }
         
         .detalhes-container h2 {
@@ -51,7 +59,12 @@
     <div class="container">
         <a href="catalogo.html" class="voltar-link">← Voltar para o Catálogo</a>
         <div id="detalhes-produto" class="detalhes-container">
-            </div>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <span class="close-btn">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
