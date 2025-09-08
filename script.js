@@ -69,10 +69,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 nome: document.getElementById('nome-tenis').value,
                 valor: parseFloat(document.getElementById('valor-tenis').value),
                 descricao: document.getElementById('descricao-tenis').value,
-                genero: document.getElementById('genero-tenis').value,
+                generos: [], // Novo array para os gêneros
                 modelo: document.getElementById('modelo-tenis').value,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
+            
+            // Pega os gêneros selecionados
+            document.querySelectorAll('input[name="genero"]:checked').forEach(checkbox => {
+                novoTenis.generos.push(checkbox.value);
+            });
 
             await colecaoTenis.add(novoTenis);
             formulario.reset();
@@ -86,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filtroGeneroSelect) {
             const generoSelecionado = filtroGeneroSelect.value;
             if (generoSelecionado !== 'todos') {
-                query = query.where('genero', '==', generoSelecionado);
+                query = query.where('generos', 'array-contains', generoSelecionado);
             }
         }
         
@@ -128,15 +133,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const tenisCard = document.createElement('div');
             tenisCard.classList.add('tenis-card');
             
-            // Verifica se o array de imagens existe
             const primeiraImagem = (tenis.imagemUrls && tenis.imagemUrls.length > 0) ? tenis.imagemUrls[0] : '';
+            const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
 
             let cardHTML = `
                 <img src="${primeiraImagem}" alt="Imagem do Tênis">
                 <h3>${tenis.nome}</h3>
                 <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
                 <p>${tenis.descricao}</p>
-                <p><strong>Gênero:</strong> ${tenis.genero}</p>
+                <p><strong>Gênero:</strong> ${generosTexto}</p>
                 <p><strong>Modelo:</strong> ${tenis.modelo}</p>
             `;
             
@@ -186,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             ${imagensHtml}
                         </div>
                         <p>${tenis.descricao}</p>
-                        <p><strong>Gênero:</strong> ${tenis.genero}</p>
+                        <p><strong>Gênero:</strong> ${tenis.generos.join(', ')}</p>
                         <p><strong>Modelo:</strong> ${tenis.modelo}</p>
                     `;
                 } else {
