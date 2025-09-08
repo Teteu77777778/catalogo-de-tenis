@@ -28,10 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAplicar = document.getElementById('btn-aplicar');
     
     const imagemFileInput = document.getElementById('imagem-file');
+    const imagensAtuaisContainer = document.getElementById('imagens-atuais');
     
     const btnSubmit = document.getElementById('btn-submit');
     const btnCancelar = document.getElementById('btn-cancelar');
     const tenisIdInput = document.getElementById('tenis-id');
+
+    let currentImageUrls = []; // Para armazenar as URLs das imagens ao editar
 
     // --- Parte 1: Gerenciamento (index.html) ---
     if (formulario) {
@@ -39,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const tenisId = tenisIdInput.value;
+            let finalImageUrls = [...currentImageUrls]; // Começa com as imagens já existentes
 
-            const urls = [];
             const arquivos = imagemFileInput.files;
 
             // Se novas imagens foram selecionadas, faz o upload delas
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             },
                             async () => {
                                 const downloadURL = await storageRef.getDownloadURL();
-                                urls.push(downloadURL);
+                                finalImageUrls.push(downloadURL); // Adiciona as novas URLs
                                 resolve();
                             }
                         );
@@ -70,26 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 await Promise.all(uploadPromises);
             }
 
-            const novoTenis = {
-                imagemUrls: urls, // Pode estar vazio se nenhuma nova imagem foi enviada
+            const tenisData = {
+                imagemUrls: finalImageUrls,
                 nome: document.getElementById('nome-tenis').value,
                 valor: parseFloat(document.getElementById('valor-tenis').value),
                 descricao: document.getElementById('descricao-tenis').value,
                 generos: [],
                 modelo: document.getElementById('modelo-tenis').value,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
             
             document.querySelectorAll('input[name="genero"]:checked').forEach(checkbox => {
-                novoTenis.generos.push(checkbox.value);
+                tenisData.generos.push(checkbox.value);
             });
 
             if (tenisId) {
                 // Se existe um ID, atualiza o documento existente
-                await colecaoTenis.doc(tenisId).update(novoTenis);
+                await colecaoTenis.doc(tenisId).update(tenisData);
             } else {
                 // Se não existe ID, adiciona um novo documento
-                await colecaoTenis.add(novoTenis);
+                tenisData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                await colecaoTenis.add(tenisData);
             }
 
             formulario.reset();
@@ -106,6 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSubmit.textContent = "Adicionar Tênis";
         btnCancelar.style.display = 'none';
         tenisIdInput.value = '';
+        imagemFileInput.value = ''; // Limpa o campo de arquivo
+        imagensAtuaisContainer.innerHTML = ''; // Limpa as imagens de pré-visualização
+        currentImageUrls = []; // Reseta as URLs de imagem atuais
     }
 
     // Função para preencher o formulário quando o botão de editar é clicado
@@ -125,8 +131,65 @@ document.addEventListener('DOMContentLoaded', () => {
             tenisIdInput.value = doc.id;
             btnSubmit.textContent = "Salvar Alterações";
             btnCancelar.style.display = 'inline-block';
+
+            // Carrega e exibe as imagens atuais
+            currentImageUrls = tenis.imagemUrls || [];
+            renderizarImagensAtuais();
         }
     }
+
+    // Função para renderizar as imagens atuais na interface de edição
+    function renderizarImagensAtuais() {
+        imagensAtuaisContainer.innerHTML = '';
+        if (currentImageUrls.length === 0) {
+            imagensAtuaisContainer.innerHTML = '<p style="color:#777;">Nenhuma imagem atual.</p>';
+            return;
+        }
+
+        currentImageUrls.forEach((url, index) => {
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('imagem-preview-container');
+            
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = `Imagem ${index + 1}`;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.classList.add('remover-imagem-btn');
+            removeBtn.textContent = 'X';
+            removeBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                // Remove a imagem do Storage e atualiza o Firestore
+                await removerImagem(tenisIdInput.value, url, index);
+            });
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(removeBtn);
+            imagensAtuaisContainer.appendChild(imgContainer);
+        });
+    }
+
+    // Função para remover uma imagem
+    async function removerImagem(tenisId, imageUrl, indexToRemove) {
+        // Remove do Storage
+        try {
+            const imageRef = storage.refFromURL(imageUrl);
+            await imageRef.delete();
+            console.log("Imagem removida do Storage:", imageUrl);
+        } catch (error) {
+            console.error("Erro ao remover imagem do Storage:", error);
+            // Continua mesmo se a remoção do Storage falhar, para tentar remover do Firestore
+        }
+
+        // Remove do array de URLs e atualiza o Firestore
+        currentImageUrls.splice(indexToRemove, 1);
+        await colecaoTenis.doc(tenisId).update({
+            imagemUrls: currentImageUrls
+        });
+        renderizarImagensAtuais(); // Re-renderiza a lista de imagens
+    }
+
 
     // --- Parte 2: Lógica de Filtro, Busca e Ordenação ---
     function iniciarCatalogo() {
@@ -209,6 +272,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnRemover.addEventListener('click', async (e) => {
                     e.stopPropagation();
                     e.preventDefault();
+
+                    // Antes de remover o documento, remove todas as imagens associadas
+                    if (tenis.imagemUrls && tenis.imagemUrls.length > 0) {
+                        const deleteImagePromises = tenis.imagemUrls.map(url => {
+                            const imageRef = storage.refFromURL(url);
+                            return imageRef.delete().catch(error => console.error("Erro ao remover imagem do Storage:", error));
+                        });
+                        await Promise.all(deleteImagePromises);
+                    }
                     await colecaoTenis.doc(tenis.id).delete();
                 });
 
