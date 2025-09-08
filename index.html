@@ -9,12 +9,14 @@
 <body>
 
     <div class="container">
-        <h1>Adicionar Tênis ao Catálogo</h1>
+        <h1>Adicionar / Editar Tênis</h1>
 
         <form id="formulario-tenis">
+            <input type="hidden" id="tenis-id">
+
             <div class="form-group">
                 <label for="imagem-file">Imagens (Upload):</label>
-                <input type="file" id="imagem-file" accept="image/*" multiple required>
+                <input type="file" id="imagem-file" accept="image/*" multiple>
             </div>
             <div class="form-group">
                 <label for="nome-tenis">Nome do Tênis:</label>
@@ -42,7 +44,8 @@
                 <label for="modelo-tenis">Modelo:</label>
                 <input type="text" id="modelo-tenis" required>
             </div>
-            <button type="submit">Adicionar Tênis</button>
+            <button type="submit" id="btn-submit">Adicionar Tênis</button>
+            <button type="button" id="btn-cancelar" style="display: none;">Cancelar</button>
         </form>
 
         <hr>
