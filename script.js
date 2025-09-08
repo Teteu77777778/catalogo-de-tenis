@@ -69,12 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 nome: document.getElementById('nome-tenis').value,
                 valor: parseFloat(document.getElementById('valor-tenis').value),
                 descricao: document.getElementById('descricao-tenis').value,
-                generos: [], // Novo array para os gêneros
+                generos: [],
                 modelo: document.getElementById('modelo-tenis').value,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
             
-            // Pega os gêneros selecionados
             document.querySelectorAll('input[name="genero"]:checked').forEach(checkbox => {
                 novoTenis.generos.push(checkbox.value);
             });
