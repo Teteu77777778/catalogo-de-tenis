@@ -1,120 +1,171 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #eef2f7;
     color: #333;
     padding: 20px;
     line-height: 1.6;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     background: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 h1, h2 {
-    color: #444;
+    color: #2c3e50;
     text-align: center;
+    margin-bottom: 25px;
 }
 
-hr {
-    border: 0;
-    height: 1px;
-    background-color: #ddd;
-    margin: 30px 0;
+.titulo-catalogo {
+    font-size: 2.5em;
+    font-weight: 600;
 }
 
-/* Estilos do formulário */
+/* --- Estilos do Formulário de Gerenciamento --- */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
+.form-group input,
+.form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Garante que o padding não aumente a largura */
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
 }
 
-button[type="submit"] {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button[type="submit"], #btn-aplicar {
     display: block;
     width: 100%;
-    padding: 12px;
+    padding: 15px;
     background-color: #007bff;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover, #btn-aplicar:hover {
     background-color: #0056b3;
+    transform: translateY(-2px);
 }
 
-/* Estilos do catálogo */
-#catalogo-container {
+/* --- Estilos dos Filtros e Pesquisa --- */
+.filtros-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.search-bar {
+    flex-grow: 1;
+    min-width: 250px;
+}
+
+.search-bar input {
+    width: 100%;
+}
+
+.select-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-group select {
+    padding: 10px;
+}
+
+/* --- Estilos do Catálogo --- */
+#catalogo-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    justify-items: center;
 }
 
 .tenis-card {
-    width: 220px;
     background: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tenis-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .tenis-card img {
     width: 100%;
     height: auto;
-    border-radius: 4px;
-    margin-bottom: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
 .tenis-card h3 {
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin: 0 0 5px;
-}
-
-.tenis-card p {
-    margin: 0 0 10px;
+    color: #444;
 }
 
 .tenis-card .valor {
     font-weight: bold;
     color: #28a745;
-    font-size: 1.1em;
+    font-size: 1.3em;
+    margin-bottom: 10px;
 }
-/* Estilo para o botão de remover */
+
+.tenis-card p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #777;
+}
+
 .btn-remover {
     display: block;
     width: 100%;
-    padding: 8px;
-    margin-top: 10px;
+    padding: 10px;
+    margin-top: 15px;
     background-color: #dc3545;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
