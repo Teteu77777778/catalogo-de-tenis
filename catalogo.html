@@ -9,11 +9,42 @@
 <body>
 
     <div class="container">
-        <h2>Catálogo de Tênis</h2>
+        <h1 class="titulo-catalogo">Meu Catálogo</h1>
+        
+        <div class="filtros-container">
+            <div class="search-bar">
+                <input type="text" id="filtro-busca" placeholder="Buscar por nome ou modelo...">
+            </div>
+
+            <div class="select-group">
+                <label for="filtro-genero">Gênero:</label>
+                <select id="filtro-genero">
+                    <option value="todos">Todos</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="unissex">Unissex</option>
+                </select>
+            </div>
+
+            <div class="select-group">
+                <label for="ordenar-por">Ordenar:</label>
+                <select id="ordenar-por">
+                    <option value="asc">Menor Preço</option>
+                    <option value="desc">Maior Preço</option>
+                </select>
+            </div>
+            
+            <button id="btn-aplicar">Aplicar</button>
+        </div>
+
+        <p id="contador-produtos" class="contador"></p>
         <div id="catalogo-container">
             </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
