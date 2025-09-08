@@ -201,6 +201,24 @@ button[type="submit"]:hover, #btn-aplicar:hover {
     background-color: #e0a800;
 }
 
+.btn-whatsapp {
+    display: block;
+    width: 100%;
+    background-color: #25d366;
+    color: #fff;
+    border-radius: 6px;
+    padding: 12px 10px;
+    margin-top: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-whatsapp:hover {
+    background-color: #128c7e;
+}
+
 /* Estilos para as imagens atuais na edição */
 .imagens-atuais {
     display: flex;
@@ -210,7 +228,7 @@ button[type="submit"]:hover, #btn-aplicar:hover {
     border: 1px dashed #ccc;
     padding: 10px;
     border-radius: 8px;
-    min-height: 50px; /* Para mostrar que há um espaço */
+    min-height: 50px;
     justify-content: center;
     align-items: center;
 }
