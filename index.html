@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Tênis</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Adicionar Tênis ao Catálogo</h1>
+
+        <form id="formulario-tenis">
+            <div class="form-group">
+                <label for="imagem-url">URL da Imagem:</label>
+                <input type="text" id="imagem-url" required>
+            </div>
+            <div class="form-group">
+                <label for="nome-tenis">Nome do Tênis:</label>
+                <input type="text" id="nome-tenis" required>
+            </div>
+            <div class="form-group">
+                <label for="valor-tenis">Valor:</label>
+                <input type="number" id="valor-tenis" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="descricao-tenis">Descrição:</label>
+                <textarea id="descricao-tenis" rows="3" required></textarea>
+            </div>
+            <button type="submit">Adicionar Tênis</button>
+        </form>
+
+        <hr>
+
+        <h2>Meu Catálogo</h2>
+        <div id="catalogo-container">
+            </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
