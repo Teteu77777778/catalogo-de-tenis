@@ -28,14 +28,16 @@
                 <label for="descricao-tenis">Descrição:</label>
                 <textarea id="descricao-tenis" rows="3" required></textarea>
             </div>
+            
             <div class="form-group">
                 <label>Gênero:</label>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" name="genero" value="masculino"> Masculino</label>
-                    <label><input type="checkbox" name="genero" value="feminino"> Feminino</label>
-                    <label><input type="checkbox" name="genero" value="unissex"> Unissex</label>
-                </select>
+                    <label><input type="checkbox" name="genero" value="masculino" required> Masculino</label>
+                    <label><input type="checkbox" name="genero" value="feminino" required> Feminino</label>
+                    <label><input type="checkbox" name="genero" value="unissex" required> Unissex</label>
+                </div>
             </div>
+            
             <div class="form-group">
                 <label for="modelo-tenis">Modelo:</label>
                 <input type="text" id="modelo-tenis" required>
@@ -56,4 +58,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
