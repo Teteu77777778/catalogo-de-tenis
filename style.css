@@ -76,6 +76,16 @@ button[type="submit"]:hover, #btn-aplicar:hover {
     transform: translateY(-2px);
 }
 
+#btn-cancelar {
+    margin-top: 10px;
+    background-color: #888;
+}
+
+#btn-cancelar:hover {
+    background-color: #666;
+}
+
+
 /* --- Estilos dos Filtros e Pesquisa --- */
 .filtros-container {
     display: flex;
@@ -156,20 +166,37 @@ button[type="submit"]:hover, #btn-aplicar:hover {
     color: #777;
 }
 
-.btn-remover {
-    display: block;
+.btn-admin {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-admin button {
     width: 100%;
     padding: 10px;
-    margin-top: 15px;
-    background-color: #dc3545;
-    color: #fff;
     border: none;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
+.btn-remover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
 .btn-remover:hover {
     background-color: #c82333;
+}
+
+.btn-editar {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.btn-editar:hover {
+    background-color: #e0a800;
 }
