@@ -37,6 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentImageUrls = [];
     const whatsappNumber = "5511989806235"; // Seu número de WhatsApp aqui
 
+    // --- Lógica do Lightbox ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        lightboxImg.src = imageUrl;
+    }
+
     // --- Parte 1: Gerenciamento (index.html) ---
     if (formulario) {
         formulario.addEventListener('submit', async (e) => {
@@ -289,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica para a Página de Detalhes ---
     const detalhesContainer = document.getElementById('detalhes-produto');
+    const lightbox = document.getElementById('lightbox');
 
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -301,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let imagensHtml = '';
                     if (tenis.imagemUrls && tenis.imagemUrls.length > 0) {
                          tenis.imagemUrls.forEach(url => {
-                            imagensHtml += `<img src="${url}" alt="${tenis.nome}">`;
+                            imagensHtml += `<img src="${url}" alt="${tenis.nome}" class="thumbnail-galeria">`;
                         });
                     }
                     const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
@@ -318,6 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p><strong>Modelo:</strong> ${tenis.modelo}</p>
                         <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
                     `;
+
+                    // Adiciona o evento de clique nas miniaturas da galeria
+                    document.querySelectorAll('.thumbnail-galeria').forEach(thumbnail => {
+                        thumbnail.addEventListener('click', (e) => {
+                            abrirLightbox(e.target.src);
+                        });
+                    });
                 } else {
                     detalhesContainer.innerHTML = `<p>Produto não encontrado.</p>`;
                 }
@@ -343,6 +367,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
+
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        document.getElementById('lightbox-img').src = imageUrl;
+    }
+
 
     // Inicia a primeira vez
     iniciarCatalogo();
