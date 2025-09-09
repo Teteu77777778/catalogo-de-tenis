@@ -9,7 +9,6 @@ const firebaseConfig = {
   measurementId: "G-WY8S589PW1"
 };
 
-// Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
 // Conecta ao banco de dados Firestore e ao Storage
@@ -84,10 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const tenisId = tenisIdInput.value;
-            let finalImageUrls = [...currentImageUrls];
+            let finalImageUrls = [...currentImageUrls]; // Começa com as imagens já existentes
 
             const arquivos = imagemFileInput.files;
 
+            // Se houver novos arquivos, faz o upload e adiciona às URLs finais
             if (arquivos.length > 0) {
                 const uploadPromises = [];
                 for (let i = 0; i < arquivos.length; i++) {
@@ -133,8 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (tenisId) {
+                // Se o tenisId existe, é uma edição
                 await colecaoTenis.doc(tenisId).update(tenisData);
             } else {
+                // Caso contrário, é um novo item
                 tenisData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
                 await colecaoTenis.add(tenisData);
             }
@@ -156,6 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
         imagemFileInput.value = '';
         if(imagensAtuaisContainer) imagensAtuaisContainer.innerHTML = '';
         currentImageUrls = [];
+        // Desmarcar todos os checkboxes de gênero e numeração
+        document.querySelectorAll('input[name="genero"]').forEach(checkbox => checkbox.checked = false);
+        document.querySelectorAll('input[name="numeracao"]').forEach(checkbox => checkbox.checked = false);
     }
 
     async function preencherFormulario(tenisId) {
@@ -163,9 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (doc.exists) {
             const tenis = doc.data();
             
-            // Limpa o formulário antes de preencher
-            formulario.reset();
-            resetarFormulario();
+            // Limpa o formulário APÓS carregar os dados, mas ANTES de preencher
+            // E garante que o tenisIdInput esteja preenchido antes do reset
+            tenisIdInput.value = doc.id; // Define o ID primeiro
+            formulario.reset(); // Reseta os campos
+            resetarFormulario(); // Garante que o estado seja limpo, mas mantém o tenisId
 
             document.getElementById('nome-tenis').value = tenis.nome;
             document.getElementById('valor-tenis').value = tenis.valor;
@@ -173,14 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('modelo-tenis').value = tenis.modelo;
             
             document.querySelectorAll('input[name="genero"]').forEach(checkbox => {
-                checkbox.checked = tenis.generos.includes(checkbox.value);
+                checkbox.checked = tenis.generos && tenis.generos.includes(checkbox.value);
             });
             
             document.querySelectorAll('input[name="numeracao"]').forEach(checkbox => {
-                checkbox.checked = tenis.numeracoes.includes(parseInt(checkbox.value));
+                checkbox.checked = tenis.numeracoes && tenis.numeracoes.includes(parseInt(checkbox.value));
             });
 
-            tenisIdInput.value = doc.id;
             btnSubmit.textContent = "Salvar Alterações";
             btnCancelar.style.display = 'inline-block';
 
@@ -212,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
             removeBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 e.preventDefault();
+                // Passa o ID do tênis que está sendo editado para a função removerImagem
                 await removerImagem(tenisIdInput.value, url, index);
             });
 
@@ -222,18 +229,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function removerImagem(tenisId, imageUrl, indexToRemove) {
+        if (!tenisId) {
+            console.error("ID do tênis não encontrado para remover a imagem.");
+            return;
+        }
         try {
             const imageRef = storage.refFromURL(imageUrl);
             await imageRef.delete();
         } catch (error) {
             console.error("Erro ao remover imagem do Storage:", error);
+            // Continua mesmo se a imagem não for encontrada no storage, pois o importante é remover do DB
         }
 
         currentImageUrls.splice(indexToRemove, 1);
         await colecaoTenis.doc(tenisId).update({
             imagemUrls: currentImageUrls
         });
-        renderizarImagensAtuais();
+        renderizarImagensAtuais(); // Atualiza a exibição das imagens
     }
 
 
@@ -294,153 +306,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
         documentos.forEach(tenis => {
             const tenisCard = document.createElement('div');
-            tenisCard.classList.add('tenis-card');
-            
-            const primeiraImagem = (tenis.imagemUrls && tenis.imagemUrls.length > 0) ? tenis.imagemUrls[0] : '';
-            const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
-            const numeracoesTexto = tenis.numeracoes ? tenis.numeracoes.join(', ') : 'Não especificado';
-
-            let cardHTML = `
-                <div class="imagem-container">
-                    <img src="${primeiraImagem}" alt="Imagem do Tênis">
-                </div>
-                <h3>${tenis.nome}</h3>
-                <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
-                <p>${tenis.descricao}</p>
-                <p><strong>Gênero:</strong> ${generosTexto}</p>
-                <p><strong>Numeração:</strong> ${numeracoesTexto}</p>
-                <p><strong>Modelo:</strong> ${tenis.modelo}</p>
-            `;
-            
-            const whatsappMessage = `Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`;
-            const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(whatsappMessage)}`;
-            
-            cardHTML += `<a href="${whatsappLink}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>`;
-
-            if (formulario) {
-                cardHTML += `
-                    <div class="btn-admin">
-                        <button class="btn-editar" data-id="${tenis.id}">Editar</button>
-                        <button class="btn-remover" data-id="${tenis.id}">Remover</button>
-                    </div>
-                `;
-            }
-            
-            tenisCard.innerHTML = cardHTML;
-            tenisCard.onclick = () => {
-                window.location.href = `detalhes.html?id=${tenis.id}`;
-            };
-            catalogoContainer.appendChild(tenisCard);
-            
-            if (formulario) {
-                const btnRemover = tenisCard.querySelector('.btn-remover');
-                btnRemover.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    if (tenis.imagemUrls && tenis.imagemUrls.length > 0) {
-                        const deleteImagePromises = tenis.imagemUrls.map(url => {
-                            const imageRef = storage.refFromURL(url);
-                            return imageRef.delete().catch(error => console.error("Erro ao remover imagem do Storage:", error));
-                        });
-                        await Promise.all(deleteImagePromises);
-                    }
-                    await colecaoTenis.doc(tenis.id).delete();
-                });
-
-                const btnEditar = tenisCard.querySelector('.btn-editar');
-                btnEditar.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    preencherFormulario(tenis.id);
-                });
-            }
-        });
-    }
-
-    // --- Lógica para a Página de Detalhes ---
-    const detalhesContainer = document.getElementById('detalhes-produto');
-    
-    if (detalhesContainer) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tenisId = urlParams.get('id');
-        
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-        if (closeBtn) {
-            closeBtn.onclick = function() {
-                if(lightbox) lightbox.style.display = "none";
-            }
-        }
-        
-        function abrirLightbox(imageUrl) {
-            if(lightbox && lightboxImg) {
-                lightbox.style.display = "block";
-                lightboxImg.src = imageUrl;
-            }
-        }
-
-
-        if (tenisId) {
-            colecaoTenis.doc(tenisId).get().then(doc => {
-                if (doc.exists) {
-                    const tenis = doc.data();
-                    let imagensHtml = '';
-                    if (tenis.imagemUrls && tenis.imagemUrls.length > 0) {
-                         tenis.imagemUrls.forEach(url => {
-                            imagensHtml += `<img src="${url}" alt="${tenis.nome}" class="thumbnail-galeria">`;
-                        });
-                    }
-                    const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
-                    const numeracoesTexto = tenis.numeracoes ? tenis.numeracoes.join(', ') : 'Não especificado';
-
-                    detalhesContainer.innerHTML = `
-                        <h2>${tenis.nome}</h2>
-                        <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
-                        <div class="imagens-galeria">
-                            ${imagensHtml}
-                        </div>
-                        <p>${tenis.descricao}</p>
-                        <p><strong>Gênero:</strong> ${generosTexto}</p>
-                        <p><strong>Numeração:</strong> ${numeracoesTexto}</p>
-                        <p><strong>Modelo:</strong> ${tenis.modelo}</p>
-                        <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
-                    `;
-
-                    document.querySelectorAll('.thumbnail-galeria').forEach(thumbnail => {
-                        thumbnail.addEventListener('click', (e) => {
-                            abrirLightbox(e.target.src);
-                        });
-                    });
-                } else {
-                    detalhesContainer.innerHTML = `<p>Produto não encontrado.</p>`;
-                }
-            }).catch(error => {
-                detalhesContainer.innerHTML = `<p>Erro ao carregar detalhes do produto.</p>`;
-            });
-        } else {
-            detalhesContainer.innerHTML = `<p>Nenhum produto selecionado.</p>`;
-        }
-    }
-    
-    // --- Adiciona os ouvintes de evento aos filtros e busca ---
-    if (btnAplicar) {
-        btnAplicar.addEventListener('click', iniciarCatalogo);
-    }
-    
-    if (filtroBuscaInput) {
-        let timeout = null;
-        filtroBuscaInput.addEventListener('keyup', () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                iniciarCatalogo();
-            }, 500); 
-        });
-    }
-
-    // Inicia a primeira vez
-    iniciarCatalogo();
-});
-
+            tenis
