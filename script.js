@@ -9,6 +9,7 @@ const firebaseConfig = {
   measurementId: "G-WY8S589PW1"
 };
 
+
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -36,22 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentImageUrls = [];
     const whatsappNumber = "5511989806235"; // Seu número de WhatsApp aqui
-
-    // --- Lógica do Lightbox ---
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            lightbox.style.display = "none";
-        }
-    }
-    
-    function abrirLightbox(imageUrl) {
-        lightbox.style.display = "block";
-        lightboxImg.src = imageUrl;
-    }
 
     // --- Parte 1: Gerenciamento (index.html) ---
     if (formulario) {
@@ -235,8 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Parte 3: Renderiza os cartões do catálogo ---
     function renderizarCatalogo(documentos) {
-        const catalogoContainer = document.getElementById('catalogo-container');
-        if (!catalogoContainer) return;
+        if (!catalogoContainer) return; // Evita erro se o elemento não existir
 
         catalogoContainer.innerHTML = '';
         const contador = document.getElementById('contador-produtos');
