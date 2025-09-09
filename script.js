@@ -8,7 +8,6 @@ const firebaseConfig = {
   appId: "1:611720433921:web:2d43c2b97a6bfa5753cb00",
   measurementId: "G-WY8S589PW1"
 };
-
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -31,9 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Erro ao fazer login: ' + error.message);
             }
         });
-        return;
+        return; // Não executa o restante do script na página de login
     }
     
+    // Protege a página de gerenciamento
     if (window.location.pathname.endsWith('index.html')) {
         firebase.auth().onAuthStateChanged(user => {
             if (!user) {
@@ -222,10 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function removerImagem(tenisId, imageUrl, indexToRemove) {
-        if (!tenisId) {
-            console.error("ID do tênis não encontrado para remover a imagem.");
-            return;
-        }
         try {
             const imageRef = storage.refFromURL(imageUrl);
             await imageRef.delete();
@@ -252,30 +248,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // NOVO: Faz a filtragem por numeração no próprio JavaScript para contornar a limitação do Firebase
-        const numeracaoSelecionada = filtroNumeracaoSelect ? filtroNumeracaoSelect.value : 'todos';
-
+        if (filtroNumeracaoSelect) {
+            const numeracaoSelecionada = filtroNumeracaoSelect.value;
+            if (numeracaoSelecionada !== 'todos') {
+                query = query.where('numeracoes', 'array-contains', parseInt(numeracaoSelecionada));
+            }
+        }
+        
         if (ordenarSelect) {
             const ordem = ordenarSelect.value;
             query = query.orderBy('valor', ordem);
         } else {
             query = query.orderBy('timestamp', 'asc');
         }
-        
+
         query.onSnapshot(snapshot => {
             let documentos = [];
             snapshot.forEach(doc => {
                 documentos.push({ id: doc.id, ...doc.data() });
             });
             
-            // Filtro de numeração (agora em JavaScript)
-            if (numeracaoSelecionada !== 'todos') {
-                documentos = documentos.filter(doc => 
-                    doc.numeracoes && doc.numeracoes.includes(parseInt(numeracaoSelecionada))
-                );
-            }
-            
-            // Filtro de Busca
             if (filtroBuscaInput) {
                 const termoBusca = filtroBuscaInput.value.toLowerCase();
                 documentos = documentos.filter(doc => 
