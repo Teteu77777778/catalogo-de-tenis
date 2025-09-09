@@ -9,37 +9,6 @@ const firebaseConfig = {
   measurementId: "G-WY8S589PW1"
 };
 
-Olá! Sinto muito pelos problemas. Você identificou dois bugs críticos causados pelas últimas alterações no código:
-
-O botão para remover as imagens atuais desapareceu ao editar um item.
-
-Ao salvar a edição, um novo item é criado em vez de atualizar o original.
-
-O problema estava em como a lógica de upload de imagens e de edição estava integrada no script.js. O código anterior estava sobrescrevendo a lista de imagens existentes em vez de combiná-las com as novas, e o formulário não estava sendo corretamente atualizado para reconhecer que estava em modo de "edição".
-
-Eu corrigi o código para que ele funcione corretamente. Agora, ele:
-
-Exibe as imagens atuais com um botão de remoção quando você clica em "Editar".
-
-Permite que você remova imagens uma a uma do item existente.
-
-Ao salvar, ele anexa as novas fotos (se houver) às fotos antigas e atualiza o documento existente no Firebase, sem criar um novo.
-
-Por favor, substitua todo o conteúdo do seu arquivo script.js por este código:
-
-JavaScript
-
-// A sua configuração do Firebase. Cole aqui o código que você já tem.
-const firebaseConfig = {
-    apiKey: "SUA_CHAVE_AQUI",
-    authDomain: "SEU_DOMINIO_AQUI",
-    projectId: "SEU_ID_DO_PROJETO_AQUI",
-    storageBucket: "SEU_BUCKET_AQUI",
-    messagingSenderId: "SEU_ID_MENSAGENS_AQUI",
-    appId: "SEU_ID_APP_AQUI"
-};
-
-// Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
 // Conecta ao banco de dados Firestore e ao Storage
@@ -468,3 +437,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicia a primeira vez
     iniciarCatalogo();
 });
+
