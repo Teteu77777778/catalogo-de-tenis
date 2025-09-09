@@ -31,9 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Erro ao fazer login: ' + error.message);
             }
         });
-        return;
+        return; // Não executa o restante do script na página de login
     }
     
+    // Protege a página de gerenciamento
     if (window.location.pathname.endsWith('index.html')) {
         firebase.auth().onAuthStateChanged(user => {
             if (!user) {
@@ -337,6 +338,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
+        
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const closeBtn = document.getElementsByClassName('close-btn')[0];
+
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                if(lightbox) lightbox.style.display = "none";
+            }
+        }
+        
+        function abrirLightbox(imageUrl) {
+            if(lightbox && lightboxImg) {
+                lightbox.style.display = "block";
+                lightboxImg.src = imageUrl;
+            }
+        }
+
 
         if (tenisId) {
             colecaoTenis.doc(tenisId).get().then(doc => {
@@ -392,18 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
-
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            lightbox.style.display = "none";
-        }
-    }
-    
-    function abrirLightbox(imageUrl) {
-        lightbox.style.display = "block";
-        document.getElementById('lightbox-img').src = imageUrl;
-    }
-
 
     // Inicia a primeira vez
     iniciarCatalogo();
