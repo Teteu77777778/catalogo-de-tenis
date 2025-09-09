@@ -176,6 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderizarImagensAtuais() {
+        if (!imagensAtuaisContainer) return; // Evita erro se o elemento não existir
+        
         imagensAtuaisContainer.innerHTML = '';
         if (currentImageUrls.length === 0) {
             imagensAtuaisContainer.innerHTML = '<p style="color:#777;">Nenhuma imagem atual.</p>';
@@ -332,12 +334,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Lógica para a Página de Detalhes ---
-    const detalhesContainer = document.getElementById('detalhes-produto');
     
-    if (detalhesContainer) {
+    if (window.location.pathname.endsWith('detalhes.html')) {
+        const detalhesContainer = document.getElementById('detalhes-produto');
+        if (!detalhesContainer) return;
+        
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
-        
+
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementsByClassName('close-btn')[0];
@@ -354,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 lightboxImg.src = imageUrl;
             }
         }
-
 
         if (tenisId) {
             colecaoTenis.doc(tenisId).get().then(doc => {
