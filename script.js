@@ -17,47 +17,7 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 
 document.addEventListener('DOMContentLoaded', () => {
-    const formulario = document.getElementById('formulario-tenis');
-    const catalogoContainer = document.getElementById('catalogo-container');
-    const colecaoTenis = db.collection("tenis");
-
-    // --- Elementos da Página (Admin e Cliente) ---
-    const filtroGeneroSelect = document.getElementById('filtro-genero');
-    const filtroBuscaInput = document.getElementById('filtro-busca');
-    const ordenarSelect = document.getElementById('ordenar-por');
-    const btnAplicar = document.getElementById('btn-aplicar');
-    
-    const imagemFileInput = document.getElementById('imagem-file');
-    const imagensAtuaisContainer = document.getElementById('imagens-atuais');
-    
-    const btnSubmit = document.getElementById('btn-submit');
-    const btnCancelar = document.getElementById('btn-cancelar');
-    const tenisIdInput = document.getElementById('tenis-id');
-
-    let currentImageUrls = [];
-    const whatsappNumber = "5511989806235"; // Seu número de WhatsApp aqui
-
-    // --- Lógica do Lightbox ---
-    function abrirLightbox(imageUrl) {
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        if (lightbox && lightboxImg) {
-            lightbox.style.display = "block";
-            lightboxImg.src = imageUrl;
-        }
-    }
-    
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            const lightbox = document.getElementById('lightbox');
-            if (lightbox) {
-                lightbox.style.display = "none";
-            }
-        }
-    }
-
-    // --- Lógica de autenticação e proteção da página ---
+    // --- Lógica de Autenticação ---
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -80,6 +40,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'login.html';
             }
         });
+    }
+
+    const formulario = document.getElementById('formulario-tenis');
+    const catalogoContainer = document.getElementById('catalogo-container');
+    const colecaoTenis = db.collection("tenis");
+
+    // --- Elementos da Página (Admin e Cliente) ---
+    const filtroGeneroSelect = document.getElementById('filtro-genero');
+    const filtroBuscaInput = document.getElementById('filtro-busca');
+    const ordenarSelect = document.getElementById('ordenar-por');
+    const btnAplicar = document.getElementById('btn-aplicar');
+    
+    const imagemFileInput = document.getElementById('imagem-file');
+    const imagensAtuaisContainer = document.getElementById('imagens-atuais');
+    
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnCancelar = document.getElementById('btn-cancelar');
+    const tenisIdInput = document.getElementById('tenis-id');
+
+    let currentImageUrls = [];
+    const whatsappNumber = "5511989806235";
+
+    // --- Lógica do Lightbox ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        lightboxImg.src = imageUrl;
     }
 
     // --- Parte 1: Gerenciamento (index.html) ---
@@ -264,7 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Parte 3: Renderiza os cartões do catálogo ---
     function renderizarCatalogo(documentos) {
-        if (!catalogoContainer) return; // Evita erro se o elemento não existir
+        const catalogoContainer = document.getElementById('catalogo-container');
+        if (!catalogoContainer) return;
 
         catalogoContainer.innerHTML = '';
         const contador = document.getElementById('contador-produtos');
@@ -336,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica para a Página de Detalhes ---
     const detalhesContainer = document.getElementById('detalhes-produto');
-
+    
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
@@ -395,4 +392,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        document.getElementById('lightbox-img').src = imageUrl;
+    }
+
+
+    // Inicia a primeira vez
+    iniciarCatalogo();
 });
