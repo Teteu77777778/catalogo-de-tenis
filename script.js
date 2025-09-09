@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Elementos da Página (Admin e Cliente) ---
     const filtroGeneroSelect = document.getElementById('filtro-genero');
     const filtroBuscaInput = document.getElementById('filtro-busca');
-    const filtroNumeracaoSelect = document.getElementById('filtro-numeracao'); // Novo filtro
     const ordenarSelect = document.getElementById('ordenar-por');
     const btnAplicar = document.getElementById('btn-aplicar');
     
@@ -121,15 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 descricao: document.getElementById('descricao-tenis').value,
                 generos: [],
                 modelo: document.getElementById('modelo-tenis').value,
-                numeracoes: [] // Novo array para as numerações
             };
             
             document.querySelectorAll('input[name="genero"]:checked').forEach(checkbox => {
                 tenisData.generos.push(checkbox.value);
-            });
-            
-            document.querySelectorAll('input[name="numeracao"]:checked').forEach(checkbox => {
-                tenisData.numeracoes.push(parseInt(checkbox.value));
             });
 
             if (tenisId) {
@@ -169,10 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             document.querySelectorAll('input[name="genero"]').forEach(checkbox => {
                 checkbox.checked = tenis.generos.includes(checkbox.value);
-            });
-            
-            document.querySelectorAll('input[name="numeracao"]').forEach(checkbox => {
-                checkbox.checked = tenis.numeracoes.includes(parseInt(checkbox.value));
             });
 
             tenisIdInput.value = doc.id;
@@ -243,13 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        if (filtroNumeracaoSelect) {
-            const numeracaoSelecionada = filtroNumeracaoSelect.value;
-            if (numeracaoSelecionada !== 'todos') {
-                query = query.where('numeracoes', 'array-contains', parseInt(numeracaoSelecionada));
-            }
-        }
-        
         if (ordenarSelect) {
             const ordem = ordenarSelect.value;
             query = query.orderBy('valor', ordem);
@@ -293,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const primeiraImagem = (tenis.imagemUrls && tenis.imagemUrls.length > 0) ? tenis.imagemUrls[0] : '';
             const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
-            const numeracoesTexto = tenis.numeracoes ? tenis.numeracoes.join(', ') : 'Não especificado';
 
             let cardHTML = `
                 <div class="imagem-container">
@@ -303,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
                 <p>${tenis.descricao}</p>
                 <p><strong>Gênero:</strong> ${generosTexto}</p>
-                <p><strong>Numeração:</strong> ${numeracoesTexto}</p>
                 <p><strong>Modelo:</strong> ${tenis.modelo}</p>
             `;
             
@@ -360,24 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
 
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-        if (closeBtn) {
-            closeBtn.onclick = function() {
-                if(lightbox) lightbox.style.display = "none";
-            }
-        }
-        
-        function abrirLightbox(imageUrl) {
-            if(lightbox && lightboxImg) {
-                lightbox.style.display = "block";
-                lightboxImg.src = imageUrl;
-            }
-        }
-
-
         if (tenisId) {
             colecaoTenis.doc(tenisId).get().then(doc => {
                 if (doc.exists) {
@@ -398,7 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <p>${tenis.descricao}</p>
                         <p><strong>Gênero:</strong> ${generosTexto}</p>
-                        <p><strong>Numeração:</strong> ${tenis.numeracoes.join(', ')}</p>
                         <p><strong>Modelo:</strong> ${tenis.modelo}</p>
                         <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
                     `;
@@ -433,6 +395,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        document.getElementById('lightbox-img').src = imageUrl;
+    }
+
 
     // Inicia a primeira vez
     iniciarCatalogo();
