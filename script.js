@@ -235,6 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Parte 3: Renderiza os cartões do catálogo ---
     function renderizarCatalogo(documentos) {
+        const catalogoContainer = document.getElementById('catalogo-container');
+        if (!catalogoContainer) return; // Evita erro se o elemento não existir
+
         catalogoContainer.innerHTML = '';
         const contador = document.getElementById('contador-produtos');
         if (contador) {
@@ -306,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica para a Página de Detalhes ---
     const detalhesContainer = document.getElementById('detalhes-produto');
     const lightbox = document.getElementById('lightbox');
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
 
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -323,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
 
-
                     detalhesContainer.innerHTML = `
                         <h2>${tenis.nome}</h2>
                         <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
@@ -336,7 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
                     `;
 
-                    // Adiciona o evento de clique nas miniaturas da galeria
                     document.querySelectorAll('.thumbnail-galeria').forEach(thumbnail => {
                         thumbnail.addEventListener('click', (e) => {
                             abrirLightbox(e.target.src);
@@ -368,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
     if (closeBtn) {
         closeBtn.onclick = function() {
             lightbox.style.display = "none";
