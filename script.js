@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const formulario = document.getElementById('formulario-tenis');
-    const catalogoContainer = document.getElementById('catalogo-container');
     const colecaoTenis = db.collection("tenis");
 
     // --- Elementos da Página (Admin e Cliente) ---
@@ -149,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnCancelar.style.display = 'none';
         tenisIdInput.value = '';
         imagemFileInput.value = '';
-        imagensAtuaisContainer.innerHTML = '';
+        if(imagensAtuaisContainer) imagensAtuaisContainer.innerHTML = '';
         currentImageUrls = [];
     }
 
@@ -176,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderizarImagensAtuais() {
-        if (!imagensAtuaisContainer) return; // Evita erro se o elemento não existir
+        if (!imagensAtuaisContainer) return;
         
         imagensAtuaisContainer.innerHTML = '';
         if (currentImageUrls.length === 0) {
@@ -279,7 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
 
             let cardHTML = `
-                <img src="${primeiraImagem}" alt="Imagem do Tênis">
+                <div class="imagem-container">
+                    <img src="${primeiraImagem}" alt="Imagem do Tênis">
+                </div>
                 <h3>${tenis.nome}</h3>
                 <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
                 <p>${tenis.descricao}</p>
@@ -334,30 +335,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Lógica para a Página de Detalhes ---
+    const detalhesContainer = document.getElementById('detalhes-produto');
     
-    if (window.location.pathname.endsWith('detalhes.html')) {
-        const detalhesContainer = document.getElementById('detalhes-produto');
-        if (!detalhesContainer) return;
-        
+    if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
-
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-        if (closeBtn) {
-            closeBtn.onclick = function() {
-                if(lightbox) lightbox.style.display = "none";
-            }
-        }
-        
-        function abrirLightbox(imageUrl) {
-            if(lightbox && lightboxImg) {
-                lightbox.style.display = "block";
-                lightboxImg.src = imageUrl;
-            }
-        }
 
         if (tenisId) {
             colecaoTenis.doc(tenisId).get().then(doc => {
@@ -413,7 +395,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
-
-    // Inicia a primeira vez
-    iniciarCatalogo();
 });
