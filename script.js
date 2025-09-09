@@ -31,10 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Erro ao fazer login: ' + error.message);
             }
         });
-        return; // Não executa o restante do script na página de login
+        return;
     }
     
-    // Protege a página de gerenciamento
     if (window.location.pathname.endsWith('index.html')) {
         firebase.auth().onAuthStateChanged(user => {
             if (!user) {
