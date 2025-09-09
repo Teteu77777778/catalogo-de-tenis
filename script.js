@@ -165,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (doc.exists) {
             const tenis = doc.data();
             
-            // Limpa o formulário antes de preencher
             formulario.reset();
             
             document.getElementById('nome-tenis').value = tenis.nome;
@@ -223,6 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function removerImagem(tenisId, imageUrl, indexToRemove) {
+        if (!tenisId) {
+            console.error("ID do tênis não encontrado para remover a imagem.");
+            return;
+        }
         try {
             const imageRef = storage.refFromURL(imageUrl);
             await imageRef.delete();
@@ -249,26 +252,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        if (filtroNumeracaoSelect) {
-            const numeracaoSelecionada = filtroNumeracaoSelect.value;
-            if (numeracaoSelecionada !== 'todos') {
-                query = query.where('numeracoes', 'array-contains', parseInt(numeracaoSelecionada));
-            }
-        }
-        
+        // NOVO: Faz a filtragem por numeração no próprio JavaScript para contornar a limitação do Firebase
+        const numeracaoSelecionada = filtroNumeracaoSelect ? filtroNumeracaoSelect.value : 'todos';
+
         if (ordenarSelect) {
             const ordem = ordenarSelect.value;
             query = query.orderBy('valor', ordem);
         } else {
             query = query.orderBy('timestamp', 'asc');
         }
-
+        
         query.onSnapshot(snapshot => {
             let documentos = [];
             snapshot.forEach(doc => {
                 documentos.push({ id: doc.id, ...doc.data() });
             });
             
+            // Filtro de numeração (agora em JavaScript)
+            if (numeracaoSelecionada !== 'todos') {
+                documentos = documentos.filter(doc => 
+                    doc.numeracoes && doc.numeracoes.includes(parseInt(numeracaoSelecionada))
+                );
+            }
+            
+            // Filtro de Busca
             if (filtroBuscaInput) {
                 const termoBusca = filtroBuscaInput.value.toLowerCase();
                 documentos = documentos.filter(doc => 
@@ -365,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
-        
+
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementsByClassName('close-btn')[0];
