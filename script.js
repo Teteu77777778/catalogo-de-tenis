@@ -9,6 +9,36 @@ const firebaseConfig = {
   measurementId: "G-WY8S589PW1"
 };
 
+Olá! Sinto muito pelos problemas. Você identificou dois bugs críticos causados pelas últimas alterações no código:
+
+O botão para remover as imagens atuais desapareceu ao editar um item.
+
+Ao salvar a edição, um novo item é criado em vez de atualizar o original.
+
+O problema estava em como a lógica de upload de imagens e de edição estava integrada no script.js. O código anterior estava sobrescrevendo a lista de imagens existentes em vez de combiná-las com as novas, e o formulário não estava sendo corretamente atualizado para reconhecer que estava em modo de "edição".
+
+Eu corrigi o código para que ele funcione corretamente. Agora, ele:
+
+Exibe as imagens atuais com um botão de remoção quando você clica em "Editar".
+
+Permite que você remova imagens uma a uma do item existente.
+
+Ao salvar, ele anexa as novas fotos (se houver) às fotos antigas e atualiza o documento existente no Firebase, sem criar um novo.
+
+Por favor, substitua todo o conteúdo do seu arquivo script.js por este código:
+
+JavaScript
+
+// A sua configuração do Firebase. Cole aqui o código que você já tem.
+const firebaseConfig = {
+    apiKey: "SUA_CHAVE_AQUI",
+    authDomain: "SEU_DOMINIO_AQUI",
+    projectId: "SEU_ID_DO_PROJETO_AQUI",
+    storageBucket: "SEU_BUCKET_AQUI",
+    messagingSenderId: "SEU_ID_MENSAGENS_AQUI",
+    appId: "SEU_ID_APP_AQUI"
+};
+
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -48,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Elementos da Página (Admin e Cliente) ---
     const filtroGeneroSelect = document.getElementById('filtro-genero');
     const filtroBuscaInput = document.getElementById('filtro-busca');
-    const filtroNumeracaoSelect = document.getElementById('filtro-numeracao'); // Novo filtro
+    const filtroNumeracaoSelect = document.getElementById('filtro-numeracao');
     const ordenarSelect = document.getElementById('ordenar-por');
     const btnAplicar = document.getElementById('btn-aplicar');
     
@@ -84,11 +114,38 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const tenisId = tenisIdInput.value;
-            
-            const urls = await handleImageUpload(); // Nova função de upload
-            
+            let finalImageUrls = [...currentImageUrls];
+
+            const arquivos = imagemFileInput.files;
+
+            if (arquivos.length > 0) {
+                const uploadPromises = [];
+                for (let i = 0; i < arquivos.length; i++) {
+                    const arquivo = arquivos[i];
+                    const storageRef = storage.ref(`tenis-imagens/${Date.now()}_${arquivo.name}`);
+                    const uploadTask = storageRef.put(arquivo);
+
+                    const promise = new Promise((resolve, reject) => {
+                        uploadTask.on(
+                            firebase.storage.TaskEvent.STATE_CHANGED,
+                            (snapshot) => {},
+                            (error) => {
+                                reject(error);
+                            },
+                            async () => {
+                                const downloadURL = await storageRef.getDownloadURL();
+                                finalImageUrls.push(downloadURL);
+                                resolve();
+                            }
+                        );
+                    });
+                    uploadPromises.push(promise);
+                }
+                await Promise.all(uploadPromises);
+            }
+
             const tenisData = {
-                imagemUrls: urls,
+                imagemUrls: finalImageUrls,
                 nome: document.getElementById('nome-tenis').value,
                 valor: parseFloat(document.getElementById('valor-tenis').value),
                 descricao: document.getElementById('descricao-tenis').value,
@@ -104,13 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('input[name="numeracao"]:checked').forEach(checkbox => {
                 tenisData.numeracoes.push(parseInt(checkbox.value));
             });
-            
+
             if (tenisId) {
-                // Ao editar, o array de imagens pode estar vazio se nenhuma nova imagem foi enviada
-                // Se o campo de upload estiver vazio, mantém as imagens atuais
-                if (imagemFileInput.files.length === 0) {
-                    tenisData.imagemUrls = currentImageUrls;
-                }
                 await colecaoTenis.doc(tenisId).update(tenisData);
             } else {
                 tenisData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
@@ -125,43 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
             formulario.reset();
             resetarFormulario();
         });
-    }
-
-    // Função de upload de imagens separada
-    async function handleImageUpload() {
-        const arquivos = imagemFileInput.files;
-        if (arquivos.length === 0) {
-            return currentImageUrls; // Retorna as imagens atuais se nada for selecionado
-        }
-
-        const urls = [];
-        const uploadPromises = [];
-        
-        for (let i = 0; i < arquivos.length; i++) {
-            const arquivo = arquivos[i];
-            const storageRef = storage.ref(`tenis-imagens/${Date.now()}_${arquivo.name}`);
-            const uploadTask = storageRef.put(arquivo);
-
-            const promise = new Promise((resolve, reject) => {
-                uploadTask.on(
-                    firebase.storage.TaskEvent.STATE_CHANGED,
-                    (snapshot) => {},
-                    (error) => {
-                        reject(error);
-                    },
-                    async () => {
-                        const downloadURL = await storageRef.getDownloadURL();
-                        urls.push(downloadURL);
-                        resolve();
-                    }
-                );
-            });
-            uploadPromises.push(promise);
-        }
-        await Promise.all(uploadPromises);
-        
-        // Retorna as URLs das novas imagens, substituindo as antigas
-        return urls;
     }
 
     function resetarFormulario() {
