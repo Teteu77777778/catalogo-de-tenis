@@ -84,11 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const tenisId = tenisIdInput.value;
-            let finalImageUrls = [...currentImageUrls]; // Começa com as imagens já existentes
+            let finalImageUrls = [...currentImageUrls];
 
             const arquivos = imagemFileInput.files;
 
-            // Se houver novos arquivos, faz o upload e adiciona às URLs finais
             if (arquivos.length > 0) {
                 const uploadPromises = [];
                 for (let i = 0; i < arquivos.length; i++) {
@@ -134,10 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (tenisId) {
-                // Se o tenisId existe, é uma edição
                 await colecaoTenis.doc(tenisId).update(tenisData);
             } else {
-                // Caso contrário, é um novo item
                 tenisData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
                 await colecaoTenis.add(tenisData);
             }
@@ -159,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
         imagemFileInput.value = '';
         if(imagensAtuaisContainer) imagensAtuaisContainer.innerHTML = '';
         currentImageUrls = [];
-        // Desmarcar todos os checkboxes de gênero e numeração
         document.querySelectorAll('input[name="genero"]').forEach(checkbox => checkbox.checked = false);
         document.querySelectorAll('input[name="numeracao"]').forEach(checkbox => checkbox.checked = false);
     }
@@ -169,12 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (doc.exists) {
             const tenis = doc.data();
             
-            // Limpa o formulário APÓS carregar os dados, mas ANTES de preencher
-            // E garante que o tenisIdInput esteja preenchido antes do reset
-            tenisIdInput.value = doc.id; // Define o ID primeiro
-            formulario.reset(); // Reseta os campos
-            resetarFormulario(); // Garante que o estado seja limpo, mas mantém o tenisId
-
+            // Limpa o formulário antes de preencher
+            formulario.reset();
+            
             document.getElementById('nome-tenis').value = tenis.nome;
             document.getElementById('valor-tenis').value = tenis.valor;
             document.getElementById('descricao-tenis').value = tenis.descricao;
@@ -188,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 checkbox.checked = tenis.numeracoes && tenis.numeracoes.includes(parseInt(checkbox.value));
             });
 
+            tenisIdInput.value = doc.id;
             btnSubmit.textContent = "Salvar Alterações";
             btnCancelar.style.display = 'inline-block';
 
@@ -219,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             removeBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                // Passa o ID do tênis que está sendo editado para a função removerImagem
                 await removerImagem(tenisIdInput.value, url, index);
             });
 
@@ -230,23 +223,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function removerImagem(tenisId, imageUrl, indexToRemove) {
-        if (!tenisId) {
-            console.error("ID do tênis não encontrado para remover a imagem.");
-            return;
-        }
         try {
             const imageRef = storage.refFromURL(imageUrl);
             await imageRef.delete();
         } catch (error) {
             console.error("Erro ao remover imagem do Storage:", error);
-            // Continua mesmo se a imagem não for encontrada no storage, pois o importante é remover do DB
         }
 
         currentImageUrls.splice(indexToRemove, 1);
         await colecaoTenis.doc(tenisId).update({
             imagemUrls: currentImageUrls
         });
-        renderizarImagensAtuais(); // Atualiza a exibição das imagens
+        renderizarImagensAtuais();
     }
 
 
@@ -341,8 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             tenisCard.innerHTML = cardHTML;
             tenisCard.onclick = () => {
-                // Ação para ir para detalhes, se houver
-                // window.location.href = `detalhes.html?id=${tenis.id}`;
+                window.location.href = `detalhes.html?id=${tenis.id}`;
             };
             catalogoContainer.appendChild(tenisCard);
             
