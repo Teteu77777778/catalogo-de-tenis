@@ -9,7 +9,6 @@ const firebaseConfig = {
   measurementId: "G-WY8S589PW1"
 };
 
-
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -18,6 +17,32 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Lógica de Autenticação ---
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await firebase.auth().signInWithEmailAndPassword(email, password);
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Erro ao fazer login: ' + error.message);
+            }
+        });
+        return; // Não executa o restante do script na página de login
+    }
+    
+    // Protege a página de gerenciamento
+    if (window.location.pathname.endsWith('index.html')) {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+    }
+
     const formulario = document.getElementById('formulario-tenis');
     const catalogoContainer = document.getElementById('catalogo-container');
     const colecaoTenis = db.collection("tenis");
@@ -36,7 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const tenisIdInput = document.getElementById('tenis-id');
 
     let currentImageUrls = [];
-    const whatsappNumber = "5511989806235"; // Seu número de WhatsApp aqui
+    const whatsappNumber = "5511989806235";
+
+    // --- Lógica do Lightbox ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        lightboxImg.src = imageUrl;
+    }
 
     // --- Parte 1: Gerenciamento (index.html) ---
     if (formulario) {
@@ -220,7 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Parte 3: Renderiza os cartões do catálogo ---
     function renderizarCatalogo(documentos) {
-        if (!catalogoContainer) return; // Evita erro se o elemento não existir
+        const catalogoContainer = document.getElementById('catalogo-container');
+        if (!catalogoContainer) return;
 
         catalogoContainer.innerHTML = '';
         const contador = document.getElementById('contador-produtos');
@@ -293,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica para a Página de Detalhes ---
     const detalhesContainer = document.getElementById('detalhes-produto');
     const lightbox = document.getElementById('lightbox');
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
 
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
