@@ -84,44 +84,17 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const tenisId = tenisIdInput.value;
-            let finalImageUrls = [...currentImageUrls];
-
-            const arquivos = imagemFileInput.files;
-
-            if (arquivos.length > 0) {
-                const uploadPromises = [];
-                for (let i = 0; i < arquivos.length; i++) {
-                    const arquivo = arquivos[i];
-                    const storageRef = storage.ref(`tenis-imagens/${Date.now()}_${arquivo.name}`);
-                    const uploadTask = storageRef.put(arquivo);
-
-                    const promise = new Promise((resolve, reject) => {
-                        uploadTask.on(
-                            firebase.storage.TaskEvent.STATE_CHANGED,
-                            (snapshot) => {},
-                            (error) => {
-                                reject(error);
-                            },
-                            async () => {
-                                const downloadURL = await storageRef.getDownloadURL();
-                                finalImageUrls.push(downloadURL);
-                                resolve();
-                            }
-                        );
-                    });
-                    uploadPromises.push(promise);
-                }
-                await Promise.all(uploadPromises);
-            }
-
+            
+            const urls = await handleImageUpload(); // Nova função de upload
+            
             const tenisData = {
-                imagemUrls: finalImageUrls,
+                imagemUrls: urls,
                 nome: document.getElementById('nome-tenis').value,
                 valor: parseFloat(document.getElementById('valor-tenis').value),
                 descricao: document.getElementById('descricao-tenis').value,
                 generos: [],
                 modelo: document.getElementById('modelo-tenis').value,
-                numeracoes: [] // Novo array para as numerações
+                numeracoes: []
             };
             
             document.querySelectorAll('input[name="genero"]:checked').forEach(checkbox => {
@@ -131,8 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('input[name="numeracao"]:checked').forEach(checkbox => {
                 tenisData.numeracoes.push(parseInt(checkbox.value));
             });
-
+            
             if (tenisId) {
+                // Ao editar, o array de imagens pode estar vazio se nenhuma nova imagem foi enviada
+                // Se o campo de upload estiver vazio, mantém as imagens atuais
+                if (imagemFileInput.files.length === 0) {
+                    tenisData.imagemUrls = currentImageUrls;
+                }
                 await colecaoTenis.doc(tenisId).update(tenisData);
             } else {
                 tenisData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
@@ -147,6 +125,43 @@ document.addEventListener('DOMContentLoaded', () => {
             formulario.reset();
             resetarFormulario();
         });
+    }
+
+    // Função de upload de imagens separada
+    async function handleImageUpload() {
+        const arquivos = imagemFileInput.files;
+        if (arquivos.length === 0) {
+            return currentImageUrls; // Retorna as imagens atuais se nada for selecionado
+        }
+
+        const urls = [];
+        const uploadPromises = [];
+        
+        for (let i = 0; i < arquivos.length; i++) {
+            const arquivo = arquivos[i];
+            const storageRef = storage.ref(`tenis-imagens/${Date.now()}_${arquivo.name}`);
+            const uploadTask = storageRef.put(arquivo);
+
+            const promise = new Promise((resolve, reject) => {
+                uploadTask.on(
+                    firebase.storage.TaskEvent.STATE_CHANGED,
+                    (snapshot) => {},
+                    (error) => {
+                        reject(error);
+                    },
+                    async () => {
+                        const downloadURL = await storageRef.getDownloadURL();
+                        urls.push(downloadURL);
+                        resolve();
+                    }
+                );
+            });
+            uploadPromises.push(promise);
+        }
+        await Promise.all(uploadPromises);
+        
+        // Retorna as URLs das novas imagens, substituindo as antigas
+        return urls;
     }
 
     function resetarFormulario() {
@@ -359,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
-
+        
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementsByClassName('close-btn')[0];
@@ -389,6 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
                     const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
+                    const numeracoesTexto = tenis.numeracoes ? tenis.numeracoes.join(', ') : 'Não especificado';
 
                     detalhesContainer.innerHTML = `
                         <h2>${tenis.nome}</h2>
@@ -398,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <p>${tenis.descricao}</p>
                         <p><strong>Gênero:</strong> ${generosTexto}</p>
-                        <p><strong>Numeração:</strong> ${tenis.numeracoes.join(', ')}</p>
+                        <p><strong>Numeração:</strong> ${numeracoesTexto}</p>
                         <p><strong>Modelo:</strong> ${tenis.modelo}</p>
                         <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
                     `;
