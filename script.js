@@ -17,32 +17,6 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Lógica de Autenticação ---
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            try {
-                await firebase.auth().signInWithEmailAndPassword(email, password);
-                window.location.href = 'index.html';
-            } catch (error) {
-                alert('Erro ao fazer login: ' + error.message);
-            }
-        });
-        return; // Não executa o restante do script na página de login
-    }
-    
-    // Protege a página de gerenciamento
-    if (window.location.pathname.endsWith('index.html')) {
-        firebase.auth().onAuthStateChanged(user => {
-            if (!user) {
-                window.location.href = 'login.html';
-            }
-        });
-    }
-
     const formulario = document.getElementById('formulario-tenis');
     const catalogoContainer = document.getElementById('catalogo-container');
     const colecaoTenis = db.collection("tenis");
@@ -61,22 +35,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const tenisIdInput = document.getElementById('tenis-id');
 
     let currentImageUrls = [];
-    const whatsappNumber = "5511989806235";
+    const whatsappNumber = "5511989806235"; // Seu número de WhatsApp aqui
 
     // --- Lógica do Lightbox ---
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            lightbox.style.display = "none";
+    function abrirLightbox(imageUrl) {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        if (lightbox && lightboxImg) {
+            lightbox.style.display = "block";
+            lightboxImg.src = imageUrl;
         }
     }
     
-    function abrirLightbox(imageUrl) {
-        lightbox.style.display = "block";
-        lightboxImg.src = imageUrl;
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox) {
+                lightbox.style.display = "none";
+            }
+        }
+    }
+
+    // --- Lógica de autenticação e proteção da página ---
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await firebase.auth().signInWithEmailAndPassword(email, password);
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Erro ao fazer login: ' + error.message);
+            }
+        });
+        return;
+    }
+    
+    if (window.location.pathname.endsWith('index.html')) {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
     }
 
     // --- Parte 1: Gerenciamento (index.html) ---
@@ -261,8 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Parte 3: Renderiza os cartões do catálogo ---
     function renderizarCatalogo(documentos) {
-        const catalogoContainer = document.getElementById('catalogo-container');
-        if (!catalogoContainer) return;
+        if (!catalogoContainer) return; // Evita erro se o elemento não existir
 
         catalogoContainer.innerHTML = '';
         const contador = document.getElementById('contador-produtos');
@@ -334,7 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica para a Página de Detalhes ---
     const detalhesContainer = document.getElementById('detalhes-produto');
-    const lightbox = document.getElementById('lightbox');
 
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -394,19 +395,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
-
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            lightbox.style.display = "none";
-        }
-    }
-    
-    function abrirLightbox(imageUrl) {
-        lightbox.style.display = "block";
-        document.getElementById('lightbox-img').src = imageUrl;
-    }
-
-
-    // Inicia a primeira vez
-    iniciarCatalogo();
 });
