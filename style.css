@@ -272,7 +272,7 @@ button[type="submit"]:hover, #btn-aplicar:hover {
 
 /* Lightbox (visualização de imagem grande) */
 .lightbox {
-    display: none; /* Escondido por padrão */
+    display: none;
     position: fixed;
     z-index: 1000;
     padding-top: 50px;
