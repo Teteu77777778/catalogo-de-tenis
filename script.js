@@ -9,6 +9,7 @@ const firebaseConfig = {
   measurementId: "G-WY8S589PW1"
 };
 
+// Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
 // Conecta ao banco de dados Firestore e ao Storage
@@ -161,6 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const doc = await colecaoTenis.doc(tenisId).get();
         if (doc.exists) {
             const tenis = doc.data();
+            
+            // Limpa o formulário antes de preencher
+            formulario.reset();
+            resetarFormulario();
+
             document.getElementById('nome-tenis').value = tenis.nome;
             document.getElementById('valor-tenis').value = tenis.valor;
             document.getElementById('descricao-tenis').value = tenis.descricao;
