@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Parte 3: Renderiza os cartões do catálogo ---
     function renderizarCatalogo(documentos) {
         const catalogoContainer = document.getElementById('catalogo-container');
-        if (!catalogoContainer) return; // Evita erro se o elemento não existir
+        if (!catalogoContainer) return;
 
         catalogoContainer.innerHTML = '';
         const contador = document.getElementById('contador-produtos');
