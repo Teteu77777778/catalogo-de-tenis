@@ -8,6 +8,7 @@ const firebaseConfig = {
   appId: "1:611720433921:web:2d43c2b97a6bfa5753cb00",
   measurementId: "G-WY8S589PW1"
 };
+
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -30,11 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Erro ao fazer login: ' + error.message);
             }
         });
-        return; // Não executa o restante do script na página de login
+        return;
     }
-    
-    // Protege a página de gerenciamento
-    if (window.location.pathname.endsWith('index.html')) {
+
+    // Protege a página de gerenciamento de forma mais robusta
+    const path = window.location.pathname;
+    if (path.includes('index.html') || path.endsWith('catalogo-de-tenis/')) {
         firebase.auth().onAuthStateChanged(user => {
             if (!user) {
                 window.location.href = 'login.html';
@@ -365,24 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
 
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-        if (closeBtn) {
-            closeBtn.onclick = function() {
-                if(lightbox) lightbox.style.display = "none";
-            }
-        }
-        
-        function abrirLightbox(imageUrl) {
-            if(lightbox && lightboxImg) {
-                lightbox.style.display = "block";
-                lightboxImg.src = imageUrl;
-            }
-        }
-
-
         if (tenisId) {
             colecaoTenis.doc(tenisId).get().then(doc => {
                 if (doc.exists) {
@@ -439,6 +423,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        document.getElementById('lightbox-img').src = imageUrl;
+    }
+
 
     // Inicia a primeira vez
     iniciarCatalogo();
