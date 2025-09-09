@@ -140,11 +140,21 @@ button[type="submit"]:hover, #btn-aplicar:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.tenis-card img {
+.imagem-container {
     width: 100%;
-    height: auto;
-    border-radius: 8px;
+    height: 200px; /* Tamanho fixo para a imagem */
+    overflow: hidden; /* Garante que a imagem cortada não vaze */
     margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagem-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* AQUI ESTÁ A MÁGICA: Preenche o contêiner sem distorcer */
+    border-radius: 8px;
 }
 
 .tenis-card h3 {
