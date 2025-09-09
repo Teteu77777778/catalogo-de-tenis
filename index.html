@@ -22,7 +22,7 @@
 
             <div class="form-group">
                 <label for="imagem-file">Adicionar Novas Imagens:</label>
-                <input type="file" id="imagem-file" accept="image/*" multiple required>
+                <input type="file" id="imagem-file" accept="image/*" multiple>
             </div>
             
             <div class="form-group">
@@ -51,6 +51,19 @@
                 <label for="modelo-tenis">Modelo:</label>
                 <input type="text" id="modelo-tenis" required>
             </div>
+            
+            <div class="form-group">
+                <label>Numeração:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="numeracao" value="38"> 38</label>
+                    <label><input type="checkbox" name="numeracao" value="39"> 39</label>
+                    <label><input type="checkbox" name="numeracao" value="40"> 40</label>
+                    <label><input type="checkbox" name="numeracao" value="41"> 41</label>
+                    <label><input type="checkbox" name="numeracao" value="42"> 42</label>
+                    <label><input type="checkbox" name="numeracao" value="43"> 43</label>
+                </div>
+            </div>
+            
             <button type="submit" id="btn-submit">Adicionar Tênis</button>
             <button type="button" id="btn-cancelar" style="display: none;">Cancelar</button>
         </form>
