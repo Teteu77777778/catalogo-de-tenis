@@ -115,6 +115,22 @@ button[type="submit"]:hover, #btn-aplicar:hover {
     padding: 10px;
 }
 
+/* Estilo para alinhar os checkboxes */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.checkbox-group label {
+    margin: 0;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
 /* --- Estilos do Catálogo --- */
 #catalogo-container {
     display: grid;
