@@ -395,4 +395,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        lightbox.style.display = "block";
+        document.getElementById('lightbox-img').src = imageUrl;
+    }
+
+
+    // Inicia a primeira vez
+    iniciarCatalogo();
 });
