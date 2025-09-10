@@ -3,8 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Produto - MK Calçados</title>
+    <title>Detalhes do Produto</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .detalhes-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .detalhes-container .imagens-galeria {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .detalhes-container .imagens-galeria img {
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .detalhes-container .imagens-galeria img:hover {
+            transform: scale(1.05);
+            border-color: #F87768;
+        }
+        
+        .detalhes-container h2 {
+            font-size: 2em;
+        }
+
+        .detalhes-container .valor {
+            font-size: 1.5em;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .voltar-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        .voltar-link:hover {
+            text-decoration: underline;
+        }
+
+        .detalhes-produto-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .detalhes-produto-container h2 {
+            color: #F87768;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .detalhes-produto-container .valor {
+            font-size: 1.8em;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .detalhes-produto-container .imagens-galeria {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .detalhes-produto-container .thumbnail-galeria {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .detalhes-produto-container .thumbnail-galeria:hover {
+            transform: scale(1.05);
+            border-color: #F87768;
+        }
+
+        .detalhes-produto-container p {
+            font-size: 1.1em;
+            color: #444;
+            margin-bottom: 10px;
+            text-align: justify;
+            padding: 0 10px;
+        }
+
+        .detalhes-produto-container strong {
+            color: #F87768;
+        }
+
+        .detalhes-produto-container .btn-whatsapp {
+            display: block;
+            background-color: #25D366;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 30px auto 0 auto;
+            width: fit-content;
+            transition: background-color 0.3s ease;
+        }
+
+        .detalhes-produto-container .btn-whatsapp:hover {
+            background-color: #1DA851;
+        }
+
+    </style>
 </head>
 <body>
 
@@ -17,9 +148,7 @@
 
     <div class="container">
         <a href="catalogo.html" class="voltar-link">← Voltar para o Catálogo</a>
-        
-        <div id="detalhes-produto" class="detalhes-produto-container">
-            <p>Carregando detalhes do produto...</p>
+        <div id="detalhes-produto" class="detalhes-container">
         </div>
     </div>
 
