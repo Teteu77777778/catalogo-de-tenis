@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Tênis - MK Calçados</title>
+    <title>Catálogo de Tênis - MK Calçado</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,41 +15,63 @@
         </div>
     </header>
 
-    <main class="container">
-        <div class="filtros-busca">
-            <input type="text" id="filtro-busca" placeholder="Buscar por nome ou modelo...">
-            <select id="filtro-genero">
-                <option value="todos">Gênero: Todos</option>
-                <option value="masculino">Masculino</option>
-                <option value="feminino">Feminino</option>
-                <option value="unissex">Unissex</option>
-            </select>
-            <select id="filtro-numeracao">
-                <option value="todos">Numeração: Todas</option>
-                <option value="34">34</option>
-                <option value="35">35</option>
-                <option value="36">36</option>
-                <option value="37">37</option>
-                <option value="38">38</option>
-                <option value="39">39</option>
-                <option value="40">40</option>
-                <option value="41">41</option>
-                <option value="42">42</option>
-                <option value="43">43</option>
-                <option value="44">44</option>
-            </select>
-            <select id="ordenar-por">
-                <option value="asc">Ordenar: Menor Preço</option>
-                <option value="desc">Ordenar: Maior Preço</option>
-            </select>
+    <div class="container">
+        
+        <div class="filtros-container">
+            <div class="search-bar">
+                <input type="text" id="filtro-busca" placeholder="Buscar por nome ou modelo...">
+            </div>
+
+            <div class="select-group">
+                <label for="filtro-genero">Gênero:</label>
+                <select id="filtro-genero">
+                    <option value="todos">Todos</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="unissex">Unissex</option>
+                </select>
+            </div>
+            
+            <div class="select-group">
+                <label for="filtro-numeracao">Numeração:</label>
+                <select id="filtro-numeracao">
+                    <option value="todos">Todos</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                    <option value="32">32</option>
+                    <option value="33">33</option>
+                    <option value="34">34</option>
+                    <option value="35">35</option>
+                    <option value="36">36</option>
+                    <option value="37">37</option>
+                    <option value="38">38</option>
+                    <option value="39">39</option>
+                    <option value="40">40</option>
+                    <option value="41">41</option>
+                    <option value="42">42</option>
+                    <option value="43">43</option>
+                </select>
+            </div>
+
+            <div class="select-group">
+                <label for="ordenar-por">Ordenar:</label>
+                <select id="ordenar-por">
+                    <option value="asc">Menor Preço</option>
+                    <option value="desc">Maior Preço</option>
+                </select>
+            </div>
+            
             <button id="btn-aplicar">Aplicar</button>
         </div>
 
-        <p id="contador-produtos">Carregando produtos...</p>
-        
-        <div id="catalogo-container" class="catalogo-grid">
+        <p id="contador-produtos" class="contador"></p>
+        <div id="catalogo-container">
             </div>
-    </main>
+    </div>
 
     <div id="lightbox" class="lightbox">
         <span class="close-btn">&times;</span>
@@ -63,5 +85,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
