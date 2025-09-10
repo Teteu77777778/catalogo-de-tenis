@@ -1,9 +1,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #FEE7E1; /* Um rosa claro que combina com a logo */
+    background-color: #eef2f7;
     color: #333;
+    padding: 0;
     line-height: 1.6;
 }
 
@@ -34,270 +33,310 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 20px auto;
-    padding: 0 20px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-.filtros-busca {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+
+/* --- Estilos do Formulário de Gerenciamento --- */
+.form-group {
     margin-bottom: 20px;
-    align-items: center;
-    justify-content: center; /* Centraliza os filtros */
 }
 
-.filtros-busca input[type="text"],
-.filtros-busca select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
-    flex: 1; /* Faz os campos ocuparem o espaço disponível */
-    min-width: 150px; /* Garante um tamanho mínimo */
-}
-
-.filtros-busca button {
-    padding: 10px 20px;
-    background-color: #F87768; /* Cor da logo para o botão */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-.filtros-busca button:hover {
-    background-color: #d15f54; /* Um tom um pouco mais escuro ao passar o mouse */
-}
-
-#contador-produtos {
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: bold;
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
     color: #555;
 }
 
-.catalogo-grid {
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button[type="submit"], #btn-aplicar {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:hover, #btn-aplicar:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+#btn-cancelar {
+    margin-top: 10px;
+    background-color: #888;
+}
+
+#btn-cancelar:hover {
+    background-color: #666;
+}
+
+/* Estilo para alinhar os checkboxes */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.checkbox-group label {
+    margin: 0;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- Estilos dos Filtros e Pesquisa --- */
+.filtros-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.search-bar {
+    flex-grow: 1;
+    min-width: 250px;
+}
+
+.search-bar input {
+    width: 100%;
+}
+
+.select-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-group select {
+    padding: 10px;
+}
+
+/* --- Estilos do Catálogo --- */
+#catalogo-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    justify-items: center;
 }
 
 .tenis-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    text-align: center;
-    padding-bottom: 20px; /* Espaço para o botão do WhatsApp */
+    justify-content: space-between;
 }
 
 .tenis-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.tenis-card .imagem-container {
+.imagem-container {
     width: 100%;
-    height: 220px; /* Altura fixa para a imagem */
+    height: 200px;
     overflow: hidden;
+    margin-bottom: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f0f0; /* Fundo cinza claro para imagens vazias */
 }
 
-.tenis-card img {
+.imagem-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
-    display: block; /* Remove espaço extra abaixo da imagem */
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .tenis-card h3 {
     font-size: 1.5em;
-    color: #F87768; /* Cor da logo */
-    margin: 15px 15px 5px 15px;
+    margin: 0 0 5px;
+    color: #444;
 }
 
 .tenis-card .valor {
-    font-size: 1.3em;
-    color: #4CAF50; /* Cor verde para o valor */
     font-weight: bold;
+    color: #28a745;
+    font-size: 1.3em;
     margin-bottom: 10px;
 }
 
 .tenis-card p {
+    margin: 5px 0;
     font-size: 0.9em;
-    color: #666;
-    margin: 5px 15px;
+    color: #777;
 }
 
-.tenis-card .btn-whatsapp {
-    display: inline-block;
-    background-color: #25D366; /* Cor do WhatsApp */
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 15px;
-    transition: background-color 0.3s ease;
-    width: calc(100% - 30px); /* Ocupa a largura do card com padding */
-    align-self: center; /* Centraliza o botão */
-}
-
-.tenis-card .btn-whatsapp:hover {
-    background-color: #1DA851;
-}
-
-/* Estilos da Página de Detalhes */
-.detalhes-produto {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px
-
-    /* ... (seu CSS existente acima) ... */
-
-/* Estilos da Página de Detalhes */
-.detalhes-produto-container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-.detalhes-produto-container h2 {
-    color: #F87768;
-    font-size: 2.5em;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.detalhes-produto-container .valor {
-    font-size: 1.8em;
-    color: #4CAF50;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.detalhes-produto-container .imagens-galeria {
+.btn-admin {
     display: flex;
-    flex-wrap: wrap; /* Permite que as imagens quebrem a linha */
-    gap: 15px;
     justify-content: center;
-    margin-bottom: 25px;
+    gap: 10px;
+    margin-top: 15px;
 }
 
-.detalhes-produto-container .thumbnail-galeria {
-    width: 150px; /* Tamanho fixo para as miniaturas na galeria */
-    height: 150px;
-    object-fit: cover;
-    border: 2px solid #ddd;
-    border-radius: 8px;
+.btn-admin button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
     cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-}
-
-.detalhes-produto-container .thumbnail-galeria:hover {
-    transform: scale(1.05);
-    border-color: #F87768;
-}
-
-.detalhes-produto-container p {
-    font-size: 1.1em;
-    color: #444;
-    margin-bottom: 10px;
-    text-align: justify;
-}
-
-.detalhes-produto-container strong {
-    color: #F87768;
-}
-
-.detalhes-produto-container .btn-whatsapp {
-    display: block; /* Para ocupar a largura total */
-    background-color: #25D366; /* Cor do WhatsApp */
-    color: white;
-    padding: 12px 25px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1.2em;
-    margin: 30px auto 0 auto; /* Centraliza e adiciona espaço superior */
-    width: fit-content; /* Ajusta a largura ao conteúdo */
     transition: background-color 0.3s ease;
 }
 
-.detalhes-produto-container .btn-whatsapp:hover {
-    background-color: #1DA851;
+.btn-remover {
+    background-color: #dc3545;
+    color: #fff;
 }
 
-.btn-voltar-catalogo {
+.btn-remover:hover {
+    background-color: #c82333;
+}
+
+.btn-editar {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.btn-editar:hover {
+    background-color: #e0a800;
+}
+
+.btn-whatsapp {
     display: block;
-    width: fit-content;
-    margin: 20px auto 40px auto;
-    padding: 12px 30px;
-    background-color: #6c757d;
+    width: 100%;
+    background-color: #25d366;
+    color: #fff;
+    border-radius: 6px;
+    padding: 12px 10px;
+    margin-top: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-whatsapp:hover {
+    background-color: #128c7e;
+}
+
+/* Estilos para as imagens atuais na edição */
+.imagens-atuais {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagem-preview-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagem-preview-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.remover-imagem-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #dc3545;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 0 0 0 5px;
+    padding: 2px 5px;
     cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease;
+    font-size: 0.8em;
+    line-height: 1;
+    z-index: 10;
 }
 
-.btn-voltar-catalogo:hover {
-    background-color: #5a6268;
+.remover-imagem-btn:hover {
+    background-color: #c82333;
 }
 
-/* Lightbox - Estilos corrigidos */
+/* Lightbox (visualização de imagem grande) */
 .lightbox {
-    display: none; /* Escondido por padrão */
-    position: fixed; /* Fixa na tela */
-    z-index: 1000; /* Acima de tudo */
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 50px;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Adiciona scroll se a imagem for muito grande */
-    background-color: rgba(0, 0, 0, 0.9); /* Fundo escuro semi-transparente */
-    display: flex; /* Para centralizar a imagem */
-    align-items: center; /* Centraliza verticalmente */
-    justify-content: center; /* Centraliza horizontalmente */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 .lightbox-content {
     margin: auto;
     display: block;
-    max-width: 90%; /* Limita a largura máxima da imagem */
-    max-height: 90%; /* Limita a altura máxima da imagem */
-    border-radius: 8px;
-    animation: zoomIn 0.3s; /* Adiciona uma animação suave */
-}
-
-@keyframes zoomIn {
-    from {transform: scale(0.5);}
-    to {transform: scale(1);}
+    width: 80%;
+    max-width: 700px;
 }
 
 .close-btn {
     position: absolute;
-    top: 20px;
+    top: 15px;
     right: 35px;
     color: #f1f1f1;
     font-size: 40px;
@@ -312,33 +351,3 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
-
-/* Responsividade básica para telas menores */
-@media (max-width: 768px) {
-    .main-header h1 {
-        font-size: 1.8em;
-    }
-    .logo {
-        height: 50px;
-    }
-    .filtros-busca {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .filtros-busca input[type="text"],
-    .filtros-busca select,
-    .filtros-busca button {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    .tenis-card h3 {
-        font-size: 1.3em;
-    }
-    .detalhes-produto-container h2 {
-        font-size: 2em;
-    }
-    .detalhes-produto-container .valor {
-        font-size: 1.5em;
-    }
-}
-
