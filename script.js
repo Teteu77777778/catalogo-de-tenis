@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
+    // Protege a página de gerenciamento de forma mais robusta
     const path = window.location.pathname;
     const isPublicPage = path.endsWith('catalogo.html') || path.endsWith('detalhes.html');
     const isLoginPage = path.endsWith('login.html');
@@ -250,12 +251,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function iniciarCatalogo() {
         let query = colecaoTenis;
         
-        const numeracaoSelecionada = filtroNumeracaoSelect ? filtroNumeracaoSelect.value : 'todos';
-        const generoSelecionado = filtroGeneroSelect ? filtroGeneroSelect.value : 'todos';
-
-        // Filtra por gênero (prioridade no Firebase para contornar a limitação)
-        if (generoSelecionado !== 'todos') {
-            query = query.where('generos', 'array-contains', generoSelecionado);
+        if (filtroGeneroSelect) {
+            const generoSelecionado = filtroGeneroSelect.value;
+            if (generoSelecionado !== 'todos') {
+                query = query.where('generos', 'array-contains', generoSelecionado);
+            }
+        }
+        
+        if (filtroNumeracaoSelect) {
+            const numeracaoSelecionada = filtroNumeracaoSelect.value;
+            if (numeracaoSelecionada !== 'todos') {
+                query = query.where('numeracoes', 'array-contains', parseInt(numeracaoSelecionada));
+            }
         }
         
         if (ordenarSelect) {
@@ -264,21 +271,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             query = query.orderBy('timestamp', 'asc');
         }
-        
+
         query.onSnapshot(snapshot => {
             let documentos = [];
             snapshot.forEach(doc => {
                 documentos.push({ id: doc.id, ...doc.data() });
             });
             
-            // Filtro de numeração (agora em JavaScript)
-            if (numeracaoSelecionada !== 'todos') {
-                documentos = documentos.filter(doc => 
-                    doc.numeracoes && doc.numeracoes.includes(parseInt(numeracaoSelecionada))
-                );
-            }
-            
-            // Filtro de Busca
             if (filtroBuscaInput) {
                 const termoBusca = filtroBuscaInput.value.toLowerCase();
                 documentos = documentos.filter(doc => 
@@ -439,4 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicia a primeira vez
     iniciarCatalogo();
 });
+});
+
 
