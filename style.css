@@ -1,339 +1,170 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #eef2f7;
+    margin: 0;
+    padding: 0;
+    background-color: #FEE7E1; /* Um rosa claro que combina com a logo */
     color: #333;
-    padding: 20px;
     line-height: 1.6;
 }
 
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-h1, h2 {
-    color: #2c3e50;
+.main-header {
+    background-color: #F87768; /* Cor principal da sua logo (coral/rosa avermelhado) */
+    color: white;
+    padding: 20px 0;
     text-align: center;
-    margin-bottom: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.titulo-catalogo {
-    font-size: 2.5em;
+.main-header h1 {
+    margin: 0;
+    font-size: 2.2em;
     font-weight: 600;
 }
 
-/* --- Estilos do Formulário de Gerenciamento --- */
-.form-group {
-    margin-bottom: 20px;
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Espaço entre a logo e o texto */
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
+.logo {
+    height: 60px; /* Ajuste o tamanho da sua logo conforme necessário */
+    width: auto;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.filtros-busca {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center; /* Centraliza os filtros */
+}
+
+.filtros-busca input[type="text"],
+.filtros-busca select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    flex: 1; /* Faz os campos ocuparem o espaço disponível */
+    min-width: 150px; /* Garante um tamanho mínimo */
+}
+
+.filtros-busca button {
+    padding: 10px 20px;
+    background-color: #F87768; /* Cor da logo para o botão */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.filtros-busca button:hover {
+    background-color: #d15f54; /* Um tom um pouco mais escuro ao passar o mouse */
+}
+
+#contador-produtos {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
     color: #555;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-button[type="submit"], #btn-aplicar {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button[type="submit"]:hover, #btn-aplicar:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
-#btn-cancelar {
-    margin-top: 10px;
-    background-color: #888;
-}
-
-#btn-cancelar:hover {
-    background-color: #666;
-}
-
-
-/* --- Estilos dos Filtros e Pesquisa --- */
-.filtros-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.search-bar {
-    flex-grow: 1;
-    min-width: 250px;
-}
-
-.search-bar input {
-    width: 100%;
-}
-
-.select-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.select-group select {
-    padding: 10px;
-}
-
-/* Estilo para alinhar os checkboxes */
-.checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.checkbox-group label {
-    margin: 0;
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-
-/* --- Estilos do Catálogo --- */
-#catalogo-container {
+.catalogo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
 }
 
 .tenis-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 100%;
-    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    text-align: center;
+    padding-bottom: 20px; /* Espaço para o botão do WhatsApp */
 }
 
 .tenis-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-.imagem-container {
+.tenis-card .imagem-container {
     width: 100%;
-    height: 200px;
+    height: 220px; /* Altura fixa para a imagem */
     overflow: hidden;
-    margin-bottom: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #f0f0f0; /* Fundo cinza claro para imagens vazias */
 }
 
-.imagem-container img {
+.tenis-card img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+    display: block; /* Remove espaço extra abaixo da imagem */
 }
 
 .tenis-card h3 {
     font-size: 1.5em;
-    margin: 0 0 5px;
-    color: #444;
+    color: #F87768; /* Cor da logo */
+    margin: 15px 15px 5px 15px;
 }
 
 .tenis-card .valor {
-    font-weight: bold;
-    color: #28a745;
     font-size: 1.3em;
+    color: #4CAF50; /* Cor verde para o valor */
+    font-weight: bold;
     margin-bottom: 10px;
 }
 
 .tenis-card p {
-    margin: 5px 0;
     font-size: 0.9em;
-    color: #777;
+    color: #666;
+    margin: 5px 15px;
 }
 
-.btn-admin {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.btn-admin button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn-remover {
-    background-color: #dc3545;
-    color: #fff;
-}
-
-.btn-remover:hover {
-    background-color: #c82333;
-}
-
-.btn-editar {
-    background-color: #ffc107;
-    color: #fff;
-}
-
-.btn-editar:hover {
-    background-color: #e0a800;
-}
-
-.btn-whatsapp {
-    display: block;
-    width: 100%;
-    background-color: #25d366;
-    color: #fff;
-    border-radius: 6px;
-    padding: 12px 10px;
-    margin-top: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.btn-whatsapp:hover {
-    background-color: #128c7e;
-}
-
-/* Estilos para as imagens atuais na edição */
-.imagens-atuais {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-    border: 1px dashed #ccc;
-    padding: 10px;
-    border-radius: 8px;
-    min-height: 50px;
-    justify-content: center;
-    align-items: center;
-}
-
-.imagem-preview-container {
-    position: relative;
-    width: 80px;
-    height: 80px;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.imagem-preview-container img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-}
-
-.remover-imagem-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #dc3545;
+.tenis-card .btn-whatsapp {
+    display: inline-block;
+    background-color: #25D366; /* Cor do WhatsApp */
     color: white;
-    border: none;
-    border-radius: 0 0 0 5px;
-    padding: 2px 5px;
-    cursor: pointer;
-    font-size: 0.8em;
-    line-height: 1;
-    z-index: 10;
-}
-
-.remover-imagem-btn:hover {
-    background-color: #c82333;
-}
-
-/* Lightbox (visualização de imagem grande) */
-.lightbox {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    padding-top: 50px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-.lightbox-content {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: #bbb;
+    padding: 10px 15px;
+    border-radius: 5px;
     text-decoration: none;
-    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+    width: calc(100% - 30px); /* Ocupa a largura do card com padding */
+    align-self: center; /* Centraliza o botão */
 }
+
+.tenis-card .btn-whatsapp:hover {
+    background-color: #1DA851;
+}
+
+/* Estilos da Página de Detalhes */
+.detalhes-produto {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px
