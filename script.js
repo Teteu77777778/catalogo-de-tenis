@@ -8,7 +8,7 @@ const firebaseConfig = {
   appId: "1:611720433921:web:2d43c2b97a6bfa5753cb00",
   measurementId: "G-WY8S589PW1"
 };
-// Inicializa o Firebase
+// A sua configuração do Firebase. Cole aqui o código que você já tem.
 firebase.initializeApp(firebaseConfig);
 
 // Conecta ao banco de dados Firestore e ao Storage
@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    // Protege a página de gerenciamento de forma mais robusta
     const path = window.location.pathname;
     const isPublicPage = path.endsWith('catalogo.html') || path.endsWith('detalhes.html');
     const isLoginPage = path.endsWith('login.html');
@@ -66,10 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentImageUrls = [];
     const whatsappNumber = "5511989806235";
 
-    // --- Lógica do Lightbox ---
+    // --- Lógica do Lightbox (Globais para ambas as páginas) ---
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
+    const closeBtn = document.querySelector('#lightbox .close-btn'); // Seleção mais específica
 
     if (closeBtn) {
         closeBtn.onclick = function() {
@@ -78,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function abrirLightbox(imageUrl) {
-        lightbox.style.display = "block";
+        lightbox.style.display = "flex"; // Usa flex para centralizar
         lightboxImg.src = imageUrl;
     }
 
@@ -245,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Parte 2: Lógica de Filtro, Busca e Ordenação ---
+    // --- Parte 2: Lógica de Filtro, Busca e Ordenação (catalogo.html) ---
     function iniciarCatalogo() {
         let query = colecaoTenis;
         
@@ -256,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // NOVO: Faz a filtragem por numeração no próprio JavaScript para contornar a limitação do Firebase
         const numeracaoSelecionada = filtroNumeracaoSelect ? filtroNumeracaoSelect.value : 'todos';
 
         if (ordenarSelect) {
@@ -293,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Parte 3: Renderiza os cartões do catálogo ---
+    // --- Parte 3: Renderiza os cartões do catálogo (catalogo.html) ---
     function renderizarCatalogo(documentos) {
         const catalogoContainer = document.getElementById('catalogo-container');
         if (!catalogoContainer) return;
@@ -329,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             cardHTML += `<a href="${whatsappLink}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>`;
 
-            if (formulario) {
+            if (formulario) { // Se estiver na página de gerenciamento, adiciona os botões de admin
                 cardHTML += `
                     <div class="btn-admin">
                         <button class="btn-editar" data-id="${tenis.id}">Editar</button>
@@ -370,30 +368,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Lógica para a Página de Detalhes ---
+    // --- Lógica para a Página de Detalhes (detalhes.html) ---
     const detalhesContainer = document.getElementById('detalhes-produto');
     
     if (detalhesContainer) {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
-        
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-        if (closeBtn) {
-            closeBtn.onclick = function() {
-                if(lightbox) lightbox.style.display = "none";
-            }
-        }
-        
-        function abrirLightbox(imageUrl) {
-            if(lightbox && lightboxImg) {
-                lightbox.style.display = "block";
-                lightboxImg.src = imageUrl;
-            }
-        }
-
 
         if (tenisId) {
             colecaoTenis.doc(tenisId).get().then(doc => {
@@ -408,6 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
                     const numeracoesTexto = tenis.numeracoes ? tenis.numeracoes.join(', ') : 'Não especificado';
 
+                    const whatsappMessage = `Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`;
+                    const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(whatsappMessage)}`;
+
                     detalhesContainer.innerHTML = `
                         <h2>${tenis.nome}</h2>
                         <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
@@ -418,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p><strong>Gênero:</strong> ${generosTexto}</p>
                         <p><strong>Numeração:</strong> ${numeracoesTexto}</p>
                         <p><strong>Modelo:</strong> ${tenis.modelo}</p>
-                        <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
+                        <a href="${whatsappLink}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
                     `;
 
                     document.querySelectorAll('.thumbnail-galeria').forEach(thumbnail => {
@@ -453,5 +436,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicia a primeira vez
-    iniciarCatalogo();
+    // Só inicia o catálogo se estiver na página catalogo.html ou index.html
+    if (path.endsWith('catalogo.html') || path.endsWith('index.html')) {
+        iniciarCatalogo();
+    }
 });
