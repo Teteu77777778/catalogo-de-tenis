@@ -5,7 +5,7 @@ body {
     padding: 0;
     margin: 0;
     line-height: 1.6;
-    background-image: url('textura.png'); /* AQUI ESTÁ A TEXTURA */
+    background-image: url('textura.jpg'); /* AQUI ESTÁ A TEXTURA */
     background-repeat: repeat; /* Para a imagem preencher a página */
 }
 
@@ -227,3 +227,4 @@ body {
         width: 100%;
     }
 }
+
