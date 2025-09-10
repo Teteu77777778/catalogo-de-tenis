@@ -1,4 +1,4 @@
-
+// A sua configuração do Firebase. Cole aqui o código que você já tem.
 const firebaseConfig = {
   apiKey: "AIzaSyAGjMDZrYBtPlRH1WWzcCg1JCp26ICuViw",
   authDomain: "catalogo-de-tenis-6946e.firebaseapp.com",
@@ -438,6 +438,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicia a primeira vez
     iniciarCatalogo();
 });
-});
-
-
