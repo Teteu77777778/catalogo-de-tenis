@@ -3,64 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Produto</title>
+    <title>Detalhes do Tênis - MK Calçados</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .detalhes-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 20px;
-        }
-
-        .detalhes-container .imagens-galeria {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .detalhes-container .imagens-galeria img {
-            max-width: 150px;
-            max-height: 150px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        .detalhes-container .imagens-galeria img:hover {
-            transform: scale(1.05);
-        }
-        
-        .detalhes-container h2 {
-            font-size: 2em;
-        }
-
-        .detalhes-container .valor {
-            font-size: 1.5em;
-            color: #28a745;
-        }
-
-        .voltar-link {
-            display: block;
-            margin-bottom: 20px;
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 500;
-        }
-    </style>
 </head>
 <body>
 
-    <div class="container">
-        <a href="catalogo.html" class="voltar-link">← Voltar para o Catálogo</a>
-        <div id="detalhes-produto" class="detalhes-container">
+    <header class="main-header">
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo MK Calçados" class="logo">
+            <h1>Detalhes do Tênis</h1>
         </div>
-    </div>
+    </header>
+
+    <main class="container">
+        <div id="detalhes-produto" class="detalhes-produto-container">
+            <p>Carregando detalhes do produto...</p>
+        </div>
+        <button onclick="window.location.href='catalogo.html'" class="btn-voltar-catalogo">Voltar ao Catálogo</button>
+    </main>
 
     <div id="lightbox" class="lightbox">
         <span class="close-btn">&times;</span>
