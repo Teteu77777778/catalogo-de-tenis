@@ -1,8 +1,9 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #eef2f7;
+    background-color: #eef2f7; /* Cor de fundo suave para quebrar o branco */
     color: #333;
     padding: 0;
+    margin: 0; /* Garante que não haja margem extra no corpo */
     line-height: 1.6;
 }
 
@@ -35,7 +36,7 @@ body {
 .container {
     max-width: 900px;
     margin: 20px auto;
-    background: #fff;
+    background: #fff; /* O contêiner principal permanece branco para contraste */
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -69,7 +70,7 @@ body {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #007bff;
+    border-color: #F87768; /* Cor da logo ao focar */
     outline: none;
 }
 
@@ -77,7 +78,7 @@ button[type="submit"], #btn-aplicar {
     display: block;
     width: 100%;
     padding: 15px;
-    background-color: #007bff;
+    background-color: #F87768; /* Botão com a cor da logo */
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -88,7 +89,7 @@ button[type="submit"], #btn-aplicar {
 }
 
 button[type="submit"]:hover, #btn-aplicar:hover {
-    background-color: #0056b3;
+    background-color: #e06256; /* Um pouco mais escuro ao passar o mouse */
     transform: translateY(-2px);
 }
 
@@ -143,7 +144,18 @@ button[type="submit"]:hover, #btn-aplicar:hover {
 
 .select-group select {
     padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 16px;
+    color: #333;
 }
+/* Estilo para a seta do select */
+.select-group select:focus {
+    border-color: #F87768;
+    outline: none;
+}
+
 
 /* --- Estilos do Catálogo --- */
 #catalogo-container {
@@ -236,12 +248,12 @@ button[type="submit"]:hover, #btn-aplicar:hover {
 }
 
 .btn-editar {
-    background-color: #ffc107;
+    background-color: #F87768; /* Botão editar com a cor da logo */
     color: #fff;
 }
 
 .btn-editar:hover {
-    background-color: #e0a800;
+    background-color: #e06256; /* Um pouco mais escuro ao passar o mouse */
 }
 
 .btn-whatsapp {
@@ -352,32 +364,7 @@ button[type="submit"]:hover, #btn-aplicar:hover {
     cursor: pointer;
 }
 
-.main-header {
-    background-color: #F87768; /* Cor principal da sua logo (coral/rosa avermelhado) */
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.main-header h1 {
-    margin: 0;
-    font-size: 2.2em;
-    font-weight: 600;
-}
-
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px; /* Espaço entre a logo e o texto */
-}
-
-.logo {
-    height: 60px; /* Ajuste o tamanho da sua logo conforme necessário */
-    width: auto;
-}
-
+/* Estilos para a página de detalhes */
 .detalhes-produto-container {
     background-color: #fff;
     padding: 30px;
@@ -469,4 +456,72 @@ button[type="submit"]:hover, #btn-aplicar:hover {
 
 .btn-voltar-catalogo:hover {
     background-color: #5a6268;
+}
+
+/* --- Estilos do Rodapé (Novo) --- */
+.main-footer {
+    background-color: #F87768; /* Cor principal da sua logo */
+    color: white;
+    text-align: center;
+    padding: 25px 0;
+    margin-top: 40px; /* Adiciona um espaço acima do rodapé */
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-footer p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.footer-contact p {
+    margin: 3px 0;
+    font-size: 0.85em;
+}
+
+/* Responsividade Básica */
+@media (max-width: 768px) {
+    .container {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    .main-header h1 {
+        font-size: 1.8em;
+    }
+
+    .logo {
+        height: 50px;
+    }
+
+    .filtros-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .search-bar, .select-group {
+        width: 100%;
+    }
+
+    #catalogo-container {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+    }
+
+    .tenis-card {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-header h1 {
+        font-size: 1.5em;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    .btn-admin {
+        flex-direction: column;
+    }
 }
