@@ -1,4 +1,15 @@
 // A sua configuração do Firebase. Cole aqui o código que você já tem.
+const firebaseConfig = {
+  apiKey: "AIzaSyAGjMDZrYBtPlRH1WWzcCg1JCp26ICuViw",
+  authDomain: "catalogo-de-tenis-6946e.firebaseapp.com",
+  projectId: "catalogo-de-tenis-6946e",
+  storageBucket: "catalogo-de-tenis-6946e.firebasestorage.app",
+  messagingSenderId: "611720433921",
+  appId: "1:611720433921:web:2d43c2b97a6bfa5753cb00",
+  measurementId: "G-WY8S589PW1"
+};
+
+
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
