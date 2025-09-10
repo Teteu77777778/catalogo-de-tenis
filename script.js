@@ -9,6 +9,7 @@ const firebaseConfig = {
   measurementId: "G-WY8S589PW1"
 };
 // Inicializa o Firebase
+// Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
 // Conecta ao banco de dados Firestore e ao Storage
@@ -33,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    // Protege a página de gerenciamento de forma mais robusta
     const path = window.location.pathname;
     const isPublicPage = path.endsWith('catalogo.html') || path.endsWith('detalhes.html');
     const isLoginPage = path.endsWith('login.html');
@@ -249,18 +249,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function iniciarCatalogo() {
         let query = colecaoTenis;
         
-        if (filtroGeneroSelect) {
-            const generoSelecionado = filtroGeneroSelect.value;
-            if (generoSelecionado !== 'todos') {
-                query = query.where('generos', 'array-contains', generoSelecionado);
-            }
-        }
-        
-        if (filtroNumeracaoSelect) {
-            const numeracaoSelecionada = filtroNumeracaoSelect.value;
-            if (numeracaoSelecionada !== 'todos') {
-                query = query.where('numeracoes', 'array-contains', parseInt(numeracaoSelecionada));
-            }
+        const numeracaoSelecionada = filtroNumeracaoSelect ? filtroNumeracaoSelect.value : 'todos';
+        const generoSelecionado = filtroGeneroSelect ? filtroGeneroSelect.value : 'todos';
+
+        // Filtra por gênero (prioridade no Firebase para contornar a limitação)
+        if (generoSelecionado !== 'todos') {
+            query = query.where('generos', 'array-contains', generoSelecionado);
         }
         
         if (ordenarSelect) {
@@ -276,6 +270,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 documentos.push({ id: doc.id, ...doc.data() });
             });
             
+            // Filtra por numeração (em JavaScript)
+            if (numeracaoSelecionada !== 'todos') {
+                documentos = documentos.filter(doc => 
+                    doc.numeracoes && doc.numeracoes.includes(parseInt(numeracaoSelecionada))
+                );
+            }
+            
+            // Filtro de Busca
             if (filtroBuscaInput) {
                 const termoBusca = filtroBuscaInput.value.toLowerCase();
                 documentos = documentos.filter(doc => 
@@ -373,24 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const tenisId = urlParams.get('id');
 
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const closeBtn = document.getElementsByClassName('close-btn')[0];
-
-        if (closeBtn) {
-            closeBtn.onclick = function() {
-                if(lightbox) lightbox.style.display = "none";
-            }
-        }
-        
-        function abrirLightbox(imageUrl) {
-            if(lightbox && lightboxImg) {
-                lightbox.style.display = "block";
-                lightboxImg.src = imageUrl;
-            }
-        }
-
-
         if (tenisId) {
             colecaoTenis.doc(tenisId).get().then(doc => {
                 if (doc.exists) {
@@ -404,6 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const generosTexto = tenis.generos ? tenis.generos.join(', ') : 'Não especificado';
                     const numeracoesTexto = tenis.numeracoes ? tenis.numeracoes.join(', ') : 'Não especificado';
 
+                    const whatsappMessage = `Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`;
+                    const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(whatsappMessage)}`;
+
                     detalhesContainer.innerHTML = `
                         <h2>${tenis.nome}</h2>
                         <p class="valor">R$ ${tenis.valor.toFixed(2).replace('.', ',')}</p>
@@ -414,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p><strong>Gênero:</strong> ${generosTexto}</p>
                         <p><strong>Numeração:</strong> ${numeracoesTexto}</p>
                         <p><strong>Modelo:</strong> ${tenis.modelo}</p>
-                        <a href="https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(`Olá! Gostaria de mais informações sobre o tênis '${tenis.nome}' (R$ ${tenis.valor.toFixed(2).replace('.', ',')}) que vi no seu catálogo. Poderia me ajudar?`)}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
+                        <a href="${whatsappLink}" target="_blank" class="btn-whatsapp">Comprar pelo WhatsApp</a>
                     `;
 
                     document.querySelectorAll('.thumbnail-galeria').forEach(thumbnail => {
@@ -447,6 +434,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
+    
+    if (filtroNumeracaoSelect) {
+        filtroNumeracaoSelect.addEventListener('change', () => {
+            if (btnAplicar) btnAplicar.click();
+        });
+    }
+    
+    if (filtroGeneroSelect) {
+        filtroGeneroSelect.addEventListener('change', () => {
+            if (btnAplicar) btnAplicar.click();
+        });
+    }
+
+    if (ordenarSelect) {
+        ordenarSelect.addEventListener('change', () => {
+            if (btnAplicar) btnAplicar.click();
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            lightbox.style.display = "none";
+        }
+    }
+    
+    function abrirLightbox(imageUrl) {
+        if(lightbox && lightboxImg) {
+            lightbox.style.display = "block";
+            lightboxImg.src = imageUrl;
+        }
+    }
+
 
     // Inicia a primeira vez
     iniciarCatalogo();
