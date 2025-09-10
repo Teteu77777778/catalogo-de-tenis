@@ -1,162 +1,87 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #eef2f7;
-    color: #333;
-    padding: 0;
-    line-height: 1.6;
-}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Tênis</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-.main-header {
-    background-color: #F87768; /* Cor principal da sua logo (coral/rosa avermelhado) */
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    <header class="main-header">
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo MK Calçados" class="logo">
+            <h1>Catálogo de Tênis</h1>
+        </div>
+    </header>
 
-.main-header h1 {
-    margin: 0;
-    font-size: 2.2em;
-    font-weight: 600;
-}
+    <div class="container">
+        
+        <div class="filtros-container">
+            <div class="search-bar">
+                <input type="text" id="filtro-busca" placeholder="Buscar por nome ou modelo...">
+            </div>
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px; /* Espaço entre a logo e o texto */
-}
+            <div class="select-group">
+                <label for="filtro-genero">Gênero:</label>
+                <select id="filtro-genero">
+                    <option value="todos">Todos</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="unissex">Unissex</option>
+                </select>
+            </div>
+            
+            <div class="select-group">
+                <label for="filtro-numeracao">Numeração:</label>
+                <select id="filtro-numeracao">
+                    <option value="todos">Todos</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                    <option value="32">32</option>
+                    <option value="33">33</option>
+                    <option value="34">34</option>
+                    <option value="35">35</option>
+                    <option value="36">36</option>
+                    <option value="37">37</option>
+                    <option value="38">38</option>
+                    <option value="39">39</option>
+                    <option value="40">40</option>
+                    <option value="41">41</option>
+                    <option value="42">42</option>
+                    <option value="43">43</option>
+                </select>
+            </div>
 
-.logo {
-    height: 60px; /* Ajuste o tamanho da sua logo conforme necessário */
-    width: auto;
-}
+            <div class="select-group">
+                <label for="ordenar-por">Ordenar:</label>
+                <select id="ordenar-por">
+                    <option value="asc">Menor Preço</option>
+                    <option value="desc">Maior Preço</option>
+                </select>
+            </div>
+            
+            <button id="btn-aplicar">Aplicar</button>
+        </div>
 
-.container {
-    max-width: 900px;
-    margin: 20px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
+        <p id="contador-produtos" class="contador"></p>
+        <div id="catalogo-container">
+            </div>
+    </div>
 
+    <div id="lightbox" class="lightbox">
+        <span class="close-btn">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
 
-/* --- Estilos do Formulário de Gerenciamento --- */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #555;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-button[type="submit"], #btn-aplicar {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button[type="submit"]:hover, #btn-aplicar:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
-#btn-cancelar {
-    margin-top: 10px;
-    background-color: #888;
-}
-
-#btn-cancelar:hover {
-    background-color: #666;
-}
-
-/* Estilo para alinhar os checkboxes */
-.checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.checkbox-group label {
-    margin: 0;
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* --- Estilos dos Filtros e Pesquisa --- */
-.filtros-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.search-bar {
-    flex-grow: 1;
-    min-width: 250px;
-}
-
-.search-bar input {
-    width: 100%;
-}
-
-.select-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.select-group select {
-    padding: 10px;
-}
-
-/* --- Estilos do Catálogo --- */
-#catalogo-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    justify-items: center;
-}
-
-.tenis-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 12
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
