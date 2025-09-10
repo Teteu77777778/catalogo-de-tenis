@@ -1,14 +1,4 @@
 // A sua configuração do Firebase. Cole aqui o código que você já tem.
-const firebaseConfig = {
-  apiKey: "AIzaSyAGjMDZrYBtPlRH1WWzcCg1JCp26ICuViw",
-  authDomain: "catalogo-de-tenis-6946e.firebaseapp.com",
-  projectId: "catalogo-de-tenis-6946e",
-  storageBucket: "catalogo-de-tenis-6946e.firebasestorage.app",
-  messagingSenderId: "611720433921",
-  appId: "1:611720433921:web:2d43c2b97a6bfa5753cb00",
-  measurementId: "G-WY8S589PW1"
-};
-// Inicializa o Firebase
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -249,12 +239,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function iniciarCatalogo() {
         let query = colecaoTenis;
         
-        const numeracaoSelecionada = filtroNumeracaoSelect ? filtroNumeracaoSelect.value : 'todos';
-        const generoSelecionado = filtroGeneroSelect ? filtroGeneroSelect.value : 'todos';
-
-        // Filtra por gênero (prioridade no Firebase para contornar a limitação)
-        if (generoSelecionado !== 'todos') {
-            query = query.where('generos', 'array-contains', generoSelecionado);
+        if (filtroGeneroSelect) {
+            const generoSelecionado = filtroGeneroSelect.value;
+            if (generoSelecionado !== 'todos') {
+                query = query.where('generos', 'array-contains', generoSelecionado);
+            }
+        }
+        
+        if (filtroNumeracaoSelect) {
+            const numeracaoSelecionada = filtroNumeracaoSelect.value;
+            if (numeracaoSelecionada !== 'todos') {
+                query = query.where('numeracoes', 'array-contains', parseInt(numeracaoSelecionada));
+            }
         }
         
         if (ordenarSelect) {
@@ -270,14 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 documentos.push({ id: doc.id, ...doc.data() });
             });
             
-            // Filtra por numeração (em JavaScript)
-            if (numeracaoSelecionada !== 'todos') {
-                documentos = documentos.filter(doc => 
-                    doc.numeracoes && doc.numeracoes.includes(parseInt(numeracaoSelecionada))
-                );
-            }
-            
-            // Filtro de Busca
             if (filtroBuscaInput) {
                 const termoBusca = filtroBuscaInput.value.toLowerCase();
                 documentos = documentos.filter(doc => 
@@ -434,38 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500); 
         });
     }
-    
-    if (filtroNumeracaoSelect) {
-        filtroNumeracaoSelect.addEventListener('change', () => {
-            if (btnAplicar) btnAplicar.click();
-        });
-    }
-    
-    if (filtroGeneroSelect) {
-        filtroGeneroSelect.addEventListener('change', () => {
-            if (btnAplicar) btnAplicar.click();
-        });
-    }
-
-    if (ordenarSelect) {
-        ordenarSelect.addEventListener('change', () => {
-            if (btnAplicar) btnAplicar.click();
-        });
-    }
-
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            lightbox.style.display = "none";
-        }
-    }
-    
-    function abrirLightbox(imageUrl) {
-        if(lightbox && lightboxImg) {
-            lightbox.style.display = "block";
-            lightboxImg.src = imageUrl;
-        }
-    }
-
 
     // Inicia a primeira vez
     iniciarCatalogo();
